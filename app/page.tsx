@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { AboutSection } from "@/components/sections/about-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
+import { SkillsSection } from "@/components/sections/skills-section";
 
 export default function Home() {
   return (
@@ -25,15 +26,7 @@ export default function Home() {
 
       <ProjectsSection />
 
-      <section
-        id="skills"
-        className="scroll-mt-16 border-t border-border/40 py-24"
-      >
-        <h2 className="text-2xl font-semibold tracking-tight">Skills</h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Platzhalter – hier folgen Skill-Badges.
-        </p>
-      </section>
+      <SkillsSection />
 
       <section
         id="contact"
