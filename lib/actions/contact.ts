@@ -44,6 +44,7 @@ export async function sendContactMessage(
   }
 
   const resend = new Resend(apiKey);
+  const emailBody = `Von: ${name} <${email}>\n\n${message}`;
 
   try {
     const { error } = await resend.emails.send({
@@ -51,7 +52,7 @@ export async function sendContactMessage(
       to: siteConfig.email,
       replyTo: email,
       subject: `Neue Nachricht von ${name}`,
-      text: message,
+      text: emailBody,
     });
 
     if (error) {
