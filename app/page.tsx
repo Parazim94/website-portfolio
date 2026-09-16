@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { AboutSection } from "@/components/sections/about-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { SkillsSection } from "@/components/sections/skills-section";
+import { ContactSection } from "@/components/sections/contact-section";
 
 export default function Home() {
   return (
@@ -28,15 +29,7 @@ export default function Home() {
 
       <SkillsSection />
 
-      <section
-        id="contact"
-        className="scroll-mt-16 border-t border-border/40 py-24"
-      >
-        <h2 className="text-2xl font-semibold tracking-tight">Kontakt</h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Platzhalter – hier folgt das Kontaktformular.
-        </p>
-      </section>
+      <ContactSection />
     </div>
   );
 }
