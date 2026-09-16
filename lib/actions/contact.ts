@@ -34,9 +34,8 @@ export async function sendContactMessage(
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const emailDomain = process.env.RESEND_EMAIL_DOMAIN;
 
-  if (!apiKey || !emailDomain) {
+  if (!apiKey) {
     return {
       status: "error",
       message:
@@ -48,7 +47,7 @@ export async function sendContactMessage(
 
   try {
     const { error } = await resend.emails.send({
-      from: `Portfolio Kontaktformular <kontakt@${emailDomain}>`,
+      from: `Portfolio Kontaktformular <${siteConfig.contactFromAddress}>`,
       to: siteConfig.email,
       replyTo: email,
       subject: `Neue Nachricht von ${name}`,

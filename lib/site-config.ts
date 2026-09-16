@@ -14,6 +14,7 @@ export const siteConfig = {
   location: "Berlin, Deutschland",
   tagline: "Frontend-Entwickler:in, die Ideen in schnelle, saubere Interfaces verwandelt.",
   email: "hallo@example.com",
+  contactFromAddress: "kontakt@denis-roeder.com",
   github: "https://github.com/your-handle",
   linkedin: "https://www.linkedin.com/in/your-handle",
   about: {
