@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -53,6 +54,9 @@ export function ProjectsSection() {
             <Card className="flex h-full flex-col">
               <CardHeader>
                 <CardTitle>{project.title}</CardTitle>
+                <CardAction className="text-xs text-muted-foreground">
+                  {project.period}
+                </CardAction>
                 <CardDescription>{project.description}</CardDescription>
               </CardHeader>
 

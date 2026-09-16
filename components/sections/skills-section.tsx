@@ -36,7 +36,7 @@ export function SkillsSection() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
         variants={container}
-        className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         {skillGroups.map((group) => (
           <motion.div key={group.title} variants={item}>

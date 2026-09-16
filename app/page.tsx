@@ -3,6 +3,7 @@ import { AboutSection } from "@/components/sections/about-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { SkillsSection } from "@/components/sections/skills-section";
 import { ContactSection } from "@/components/sections/contact-section";
+import { siteConfig } from "@/lib/site-config";
 
 export default function Home() {
   return (
@@ -12,11 +13,10 @@ export default function Home() {
         className="flex min-h-[calc(100vh-4rem)] scroll-mt-16 flex-col items-start justify-center gap-6"
       >
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Hallo, ich bin Dein Name 👋
+          Hallo, ich bin {siteConfig.name} 👋
         </h1>
         <p className="max-w-xl text-lg text-muted-foreground">
-          Frontend-Entwickler:in, die Ideen in schnelle, saubere Interfaces
-          verwandelt.
+          {siteConfig.tagline}
         </p>
         <Button size="lg" asChild>
           <a href="#projects">Projekte ansehen</a>

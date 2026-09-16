@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { UserRound } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
 import { siteConfig } from "@/lib/site-config";
@@ -26,20 +26,16 @@ export function AboutSection() {
           viewport={{ once: true, margin: "-80px" }}
           variants={fadeInUp}
           transition={{ duration: 0.5 }}
-          className="mx-auto aspect-square w-full max-w-[260px] overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/15 to-primary/5 md:mx-0"
+          className="relative mx-auto aspect-square w-full max-w-65 overflow-hidden rounded-2xl border border-border/60 bg-muted md:mx-0"
         >
-          {/*
-            Platzhalter fürs Profilfoto. Sobald ein echtes Bild vorliegt,
-            z.B. in public/images/profile.jpg, ersetzen durch:
-            <Image src="/images/profile.jpg" alt={siteConfig.name} fill className="object-cover" />
-          */}
-          <div className="flex h-full w-full items-center justify-center">
-            <UserRound
-              className="h-20 w-20 text-primary/40"
-              strokeWidth={1.25}
-              aria-hidden="true"
-            />
-          </div>
+          <Image
+            src="/images/profile.jpg"
+            alt={siteConfig.name}
+            fill
+            sizes="(min-width: 768px) 260px, 60vw"
+            className="object-cover"
+            priority
+          />
         </motion.div>
 
         <motion.div

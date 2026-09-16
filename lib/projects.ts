@@ -1,6 +1,7 @@
 export interface Project {
   slug: string;
   title: string;
+  period: string;
   description: string;
   tags: string[];
   liveUrl?: string;
@@ -9,29 +10,42 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "dataglobe",
+    title: "DataGlobe",
+    period: "11/2024 – 12/2024",
+    description:
+      "Interaktive 3D-Webanwendung zur benutzerfreundlichen Darstellung komplexer Datenvisualisierungen.",
+    tags: ["React", "Three.js", "HTML", "CSS", "Tailwind"],
+    liveUrl: "https://dataglobe.vercel.app",
+    githubUrl: "https://github.com/Parazim94/dataglobe",
+  },
+  {
     slug: "portfolio-website",
-    title: "Portfolio-Website",
+    title: "Portfolio Website",
+    period: "11/2024 – 12/2024",
     description:
-      "Diese Seite: eine performante, responsive Portfolio-Website mit Dark-Mode und sauber getrennten Komponenten.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/your-handle/portfolio-website",
+      "Diese Seite: persönliche Portfolio-Website zur professionellen Präsentation eigener Projekte und Fähigkeiten.",
+    tags: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+    githubUrl: "https://github.com/Parazim94/website-portfolio",
   },
   {
-    slug: "task-manager",
-    title: "Task Manager",
+    slug: "pokemon-spiel",
+    title: "Pokémon-Spiel",
+    period: "08/2024",
     description:
-      "Eine Kanban-artige Aufgabenverwaltung mit Drag & Drop, optimistischen Updates und geteiltem State zwischen Team-Mitgliedern.",
-    tags: ["React", "TypeScript", "Zustand", "Framer Motion"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com/your-handle/task-manager",
+      "Pokémon-inspiriertes Spiel mit Canvas-Element für Grafik, inklusive Bewegungssteuerung und Kollisionsabfrage.",
+    tags: ["HTML", "CSS", "JavaScript", "Canvas"],
+    liveUrl: "https://pokemon-spiel.vercel.app",
+    githubUrl: "https://github.com/Parazim94/pokemon-spiel",
   },
   {
-    slug: "recipe-finder",
-    title: "Recipe Finder",
+    slug: "passwort-generator",
+    title: "Passwort-Generator",
+    period: "09/2023 – 12/2023",
     description:
-      "Rezeptsuche mit Filtern nach Zutaten, Diätformen und Zubereitungszeit, angebunden an eine öffentliche REST-API.",
-    tags: ["Next.js", "React Query", "Tailwind CSS"],
-    githubUrl: "https://github.com/your-handle/recipe-finder",
+      "Benutzerfreundlicher Passwort-Generator für sichere, anpassbare Passwörter. Umgesetzt für die Aspeo GmbH.",
+    tags: ["HTML", "JavaScript", "Bootstrap"],
+    liveUrl: "https://passwort-generator.vercel.app",
+    githubUrl: "https://github.com/Parazim94/passwort-generator",
   },
 ];
