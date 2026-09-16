@@ -1,8 +1,11 @@
 import { Code2, Server, Wrench, type LucideIcon } from "lucide-react";
 
+export type SkillIntensity = "high" | "medium" | "low";
+
 export interface SkillGroup {
   title: string;
   icon: LucideIcon;
+  intensity: SkillIntensity;
   skills: string[];
 }
 
@@ -10,6 +13,7 @@ export const skillGroups: SkillGroup[] = [
   {
     title: "Frontend",
     icon: Code2,
+    intensity: "high",
     skills: [
       "HTML",
       "CSS",
@@ -27,6 +31,7 @@ export const skillGroups: SkillGroup[] = [
   {
     title: "Backend",
     icon: Server,
+    intensity: "medium",
     skills: [
       "Node.js",
       "Express.js",
@@ -43,6 +48,7 @@ export const skillGroups: SkillGroup[] = [
   {
     title: "Tools",
     icon: Wrench,
+    intensity: "low",
     skills: [
       "Git",
       "GitHub",

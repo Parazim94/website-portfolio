@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
@@ -13,6 +14,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { sendContactMessage, type ContactFormState } from "@/lib/actions/contact";
 
 const initialState: ContactFormState = { status: "idle", message: "" };
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+};
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -41,7 +47,15 @@ export function ContactSection() {
         description="Du hast ein Projekt, eine Frage oder einfach Lust auf Austausch? Schreib mir."
       />
 
-      <form action={formAction} className="mt-10 flex max-w-xl flex-col gap-5">
+      <motion.form
+        action={formAction}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={fadeInUp}
+        transition={{ duration: 0.5 }}
+        className="mt-10 flex max-w-xl flex-col gap-5"
+      >
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-name">Name</Label>
           <Input
@@ -85,7 +99,7 @@ export function ContactSection() {
         ) : null}
 
         <SubmitButton />
-      </form>
+      </motion.form>
     </section>
   );
 }

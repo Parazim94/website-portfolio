@@ -5,7 +5,18 @@ import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { skillGroups } from "@/lib/skills";
+import { skillGroups, type SkillIntensity } from "@/lib/skills";
+import { cn } from "@/lib/utils";
+
+// Eine einzige Akzentfarbe für alle Kategorien; nur die Intensität
+// (Opacity) der Header variiert leicht zwischen den Kategorien.
+const headerIntensityStyles: Record<SkillIntensity, string> = {
+  high: "text-sky-600 dark:text-sky-300",
+  medium: "text-sky-600/80 dark:text-sky-300/80",
+  low: "text-sky-600/60 dark:text-sky-300/60",
+};
+
+const badgeStyle = "border-sky-500/20 bg-foreground/5 text-sky-700 dark:text-sky-300";
 
 const container = {
   hidden: {},
@@ -42,17 +53,19 @@ export function SkillsSection() {
           <motion.div key={group.title} variants={item}>
             <Card className="h-full">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <group.icon
-                    className="h-4 w-4 text-primary"
-                    aria-hidden="true"
-                  />
+                <CardTitle
+                  className={cn(
+                    "flex items-center gap-2",
+                    headerIntensityStyles[group.intensity],
+                  )}
+                >
+                  <group.icon className="h-4 w-4" aria-hidden="true" />
                   {group.title}
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-1.5">
                 {group.skills.map((skill) => (
-                  <Badge key={skill} variant="outline">
+                  <Badge key={skill} variant="outline" className={badgeStyle}>
                     {skill}
                   </Badge>
                 ))}

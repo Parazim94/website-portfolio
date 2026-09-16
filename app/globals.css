@@ -81,9 +81,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --dot-color: oklch(0 0 0 / 4%);
+  --hero-glow: oklch(0 0 0 / 3%);
 }
 
 .dark {
+  --dot-color: oklch(1 0 0 / 4%);
+  --hero-glow: oklch(1 0 0 / 4%);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -126,5 +130,31 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes hero-glow-drift {
+  0%,
+  100% {
+    transform: translate(-8%, -6%) scale(1);
+  }
+  50% {
+    transform: translate(8%, 6%) scale(1.08);
+  }
+}
+
+.hero-glow {
+  background: radial-gradient(circle at center, var(--hero-glow), transparent 70%);
+  animation: hero-glow-drift 18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow {
+    animation: none;
   }
 }

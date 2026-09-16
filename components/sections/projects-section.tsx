@@ -51,7 +51,7 @@ export function ProjectsSection() {
       >
         {projects.map((project) => (
           <motion.div key={project.slug} variants={item} className="h-full">
-            <Card className="flex h-full flex-col">
+            <Card className="flex h-full flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
               <CardHeader>
                 <CardTitle>{project.title}</CardTitle>
                 <CardAction className="text-xs text-muted-foreground">
