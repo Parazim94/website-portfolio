@@ -4,7 +4,13 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { siteConfig } from "@/lib/site-config";
+import { heroTechStack } from "@/lib/tech-stack";
 
 const container = {
   hidden: {},
@@ -90,6 +96,22 @@ export function HeroSection() {
             <Button size="lg" asChild>
               <a href="#projects">Projekte ansehen</a>
             </Button>
+          </motion.div>
+
+          <motion.div variants={item} className="flex items-center gap-4">
+            {heroTechStack.map(({ name, icon: Icon }) => (
+              <Tooltip key={name}>
+                <TooltipTrigger asChild>
+                  <span
+                    tabIndex={0}
+                    className="text-muted-foreground/60 outline-none transition-colors hover:text-foreground focus-visible:text-foreground"
+                  >
+                    <Icon className="h-5 w-5" aria-label={name} />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>{name}</TooltipContent>
+              </Tooltip>
+            ))}
           </motion.div>
         </motion.div>
       </div>
