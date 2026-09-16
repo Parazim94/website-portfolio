@@ -16,17 +16,18 @@ export const projects: Project[] = [
     description:
       "Interaktive 3D-Webanwendung zur benutzerfreundlichen Darstellung komplexer Datenvisualisierungen.",
     tags: ["React", "Three.js", "HTML", "CSS", "Tailwind"],
-    liveUrl: "https://dataglobe.vercel.app",
-    githubUrl: "https://github.com/Parazim94/dataglobe",
+    liveUrl: "https://dataglobe.netlify.app/",
+    githubUrl: "https://github.com/k0miker/project-dataglobe",
   },
   {
-    slug: "portfolio-website",
-    title: "Portfolio Website",
-    period: "11/2024 – 12/2024",
+    slug: "roeder-web-alchemy",
+    title: "RoederWebAlchemy",
+    period: "07/2024",
     description:
-      "Diese Seite: persönliche Portfolio-Website zur professionellen Präsentation eigener Projekte und Fähigkeiten.",
-    tags: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    githubUrl: "https://github.com/Parazim94/website-portfolio",
+      "Interaktives Portfolio mit einem Space-Invaders-inspirierten Spiel, das Besucher spielerisch durch meine Arbeiten und Fähigkeiten führt – voll responsiv für jede Bildschirmgröße.",
+    tags: ["HTML", "CSS", "JavaScript", "Canvas"],
+    liveUrl: "https://roederwebalchemy.netlify.app/",
+    githubUrl: "https://github.com/Parazim94/RoederWebAlchemy",
   },
   {
     slug: "pokemon-spiel",
@@ -35,8 +36,8 @@ export const projects: Project[] = [
     description:
       "Pokémon-inspiriertes Spiel mit Canvas-Element für Grafik, inklusive Bewegungssteuerung und Kollisionsabfrage.",
     tags: ["HTML", "CSS", "JavaScript", "Canvas"],
-    liveUrl: "https://pokemon-spiel.vercel.app",
-    githubUrl: "https://github.com/Parazim94/pokemon-spiel",
+    liveUrl: "https://pokemon-three-rust.vercel.app/",
+    githubUrl: "https://github.com/Parazim94/Pokemon",
   },
   {
     slug: "passwort-generator",
@@ -45,7 +46,7 @@ export const projects: Project[] = [
     description:
       "Benutzerfreundlicher Passwort-Generator für sichere, anpassbare Passwörter. Umgesetzt für die Aspeo GmbH.",
     tags: ["HTML", "JavaScript", "Bootstrap"],
-    liveUrl: "https://passwort-generator.vercel.app",
-    githubUrl: "https://github.com/Parazim94/passwort-generator",
+    liveUrl: "https://parazim94.github.io/ASPEO-Passwort-Generator/",
+    githubUrl: "https://github.com/Parazim94/ASPEO-Passwort-Generator",
   },
 ];
