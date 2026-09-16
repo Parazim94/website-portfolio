@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { AboutSection } from "@/components/sections/about-section";
 
 export default function Home() {
   return (
@@ -19,15 +20,7 @@ export default function Home() {
         </Button>
       </section>
 
-      <section
-        id="about"
-        className="scroll-mt-16 border-t border-border/40 py-24"
-      >
-        <h2 className="text-2xl font-semibold tracking-tight">Über mich</h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Platzhaltertext – hier folgt in Schritt 2 die About-Sektion mit Foto.
-        </p>
-      </section>
+      <AboutSection />
 
       <section
         id="projects"
