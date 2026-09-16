@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { AboutSection } from "@/components/sections/about-section";
+import { ProjectsSection } from "@/components/sections/projects-section";
 
 export default function Home() {
   return (
@@ -22,15 +23,7 @@ export default function Home() {
 
       <AboutSection />
 
-      <section
-        id="projects"
-        className="scroll-mt-16 border-t border-border/40 py-24"
-      >
-        <h2 className="text-2xl font-semibold tracking-tight">Projekte</h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Platzhalter – hier folgt das Projekte-Grid mit Cards.
-        </p>
-      </section>
+      <ProjectsSection />
 
       <section
         id="skills"
