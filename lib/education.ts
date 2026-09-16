@@ -34,9 +34,13 @@ export const education: Education[] = [
   },
   {
     slug: "ironhack",
-    title: "Zertifizierte Weiterbildung in Webentwicklung",
-    institute: "Ironhack",
+    title: "Web Development Course",
+    institute: "Ironhack School",
     location: "Berlin",
     period: "03/2023 – 06/2023",
+    detail:
+      "Intensiver Full-Stack JavaScript Web Development Kurs (inkl. Pre-Work und Career Development).",
+    focusAreas: ["HTML5", "CSS3", "ReactJS", "ExpressJS", "MongoDB"],
+    certificateUrl: "/certificates/ironhack-zertifikat.pdf",
   },
 ];
