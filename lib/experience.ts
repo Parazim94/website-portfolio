@@ -7,37 +7,45 @@ export interface WorkExperience {
 export interface WorkProject {
   slug: string;
   title: string;
-  period: string;
   description: string;
   tags: string[];
-  imageUrl?: string;
+  images?: string[];
 }
 
 export const workExperience: WorkExperience = {
   company: "Plan B Net Zero",
   role: "Full-Stack Webentwickler",
-  period: "MM/YYYY – MM/YYYY",
+  period: "2025 – 2026",
 };
 
 export const workProjects: WorkProject[] = [
   {
-    slug: "projekt-1",
-    title: "Projekt 1",
-    period: "MM/YYYY – MM/YYYY",
+    slug: "gamification",
+    title: "Gamification",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
     tags: ["Tech 1", "Tech 2", "Tech 3"],
   },
   {
-    slug: "projekt-2",
-    title: "Projekt 2",
-    period: "MM/YYYY – MM/YYYY",
+    slug: "ki-scanner",
+    title: "KI Scanner",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
     tags: ["Tech 1", "Tech 2", "Tech 3"],
   },
   {
-    slug: "projekt-3",
-    title: "Projekt 3",
-    period: "MM/YYYY – MM/YYYY",
+    slug: "plan-b-neo-app",
+    title: "Plan B Neo App",
+    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    tags: ["Tech 1", "Tech 2", "Tech 3"],
+  },
+  {
+    slug: "plan-b-sales-app",
+    title: "Plan B Sales App",
+    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    tags: ["Tech 1", "Tech 2", "Tech 3"],
+  },
+  {
+    slug: "tarifrechner",
+    title: "Tarifrechner",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
     tags: ["Tech 1", "Tech 2", "Tech 3"],
   },
