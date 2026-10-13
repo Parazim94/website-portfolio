@@ -10,6 +10,15 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "brokechain",
+    title: "BrokeChain",
+    period: "02/2025 – 04/2025",
+    description:
+      "Plattformübergreifende Mobile-App mit Echtzeit-Marktdaten für über 100 Kryptowährungen. Sichere Anmeldung über Google OAuth 2.0 und verschlüsselte Speicherung sensibler Nutzerdaten.",
+    tags: ["React Native", "Expo", "Node.js", "Express", "WebSockets", "OAuth 2.0"],
+    githubUrl: "https://github.com/Parazim94/BrokeChain",
+  },
+  {
     slug: "dataglobe",
     title: "DataGlobe",
     period: "11/2024 – 12/2024",

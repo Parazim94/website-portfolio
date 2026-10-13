@@ -35,13 +35,6 @@ export const workProjects: WorkProject[] = [
     ],
   },
   {
-    slug: "ki-scanner",
-    title: "KI Scanner",
-    description:
-      "KI-gestützter Scanner, der Dokumente wie Stromrechnungen automatisch auswertet und die relevanten Daten ausliest.",
-    tags: ["React", "TypeScript", "Python"],
-  },
-  {
     slug: "plan-b-neo-app",
     title: "Plan B Neo App",
     description:
