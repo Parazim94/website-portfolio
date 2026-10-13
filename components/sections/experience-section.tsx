@@ -43,6 +43,12 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
+const IMAGE_FIT_CLASS = {
+  cover: "object-cover",
+  contain: "object-contain",
+  top: "object-cover object-top",
+} as const;
+
 function ProjectImageGallery({
   images,
   title,
@@ -50,7 +56,7 @@ function ProjectImageGallery({
 }: {
   images: string[];
   title: string;
-  fit?: "cover" | "contain";
+  fit?: "cover" | "contain" | "top";
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -69,7 +75,7 @@ function ProjectImageGallery({
         alt={`${title} – Screenshot ${activeIndex + 1}`}
         fill
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        className={`rounded-t-xl ${fit === "contain" ? "object-contain" : "object-cover"}`}
+        className={`rounded-t-xl ${IMAGE_FIT_CLASS[fit]}`}
       />
 
       {images.length > 1 && (

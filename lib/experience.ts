@@ -13,7 +13,7 @@ export interface WorkProject {
   liveUrl?: string;
   githubUrl?: string;
   note?: string;
-  imageFit?: "cover" | "contain";
+  imageFit?: "cover" | "contain" | "top";
 }
 
 export const workExperience: WorkExperience = {
@@ -100,5 +100,17 @@ export const personalProjects: WorkProject[] = [
       "Lokales Dashboard für Lauf- und Fitnessdaten mit Karte, Kilometer-Splits, Trainingsbelastung und Schlafauswertung. Statistik mit Bootstrap-Intervallen, die ausweist, wie belastbar die Zahlen sind.",
     tags: ["Next.js 16", "React 19", "TypeScript", "SQLite", "Python", "Recharts", "Leaflet"],
     note: "Läuft lokal – Demo auf Anfrage",
+    imageFit: "top",
+    images: [
+      "01-dashboard",
+      "03-lauf-detail",
+      "04-laufanalyse",
+      "05-strecken",
+      "06-vergleich",
+      "07-belastung",
+      "08-schlaf",
+      "09-gesundheit",
+      "02-aktivitaeten",
+    ].map((name) => `/images/projects/run-analytics/${name}.png`),
   },
 ];
