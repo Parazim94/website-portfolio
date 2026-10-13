@@ -27,31 +27,50 @@ export const workProjects: WorkProject[] = [
     slug: "gamification",
     title: "Gamification",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
-    tags: ["Tech 1", "Tech 2", "Tech 3"],
+    tags: ["React", "TypeScript", "Python"],
+    imageFit: "contain",
+    images: [
+      "/images/projects/gamification/IMG_3706.PNG",
+    ],
   },
   {
     slug: "ki-scanner",
     title: "KI Scanner",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
-    tags: ["Tech 1", "Tech 2", "Tech 3"],
+    tags: ["React", "TypeScript", "Python"],
   },
   {
     slug: "plan-b-neo-app",
     title: "Plan B Neo App",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
-    tags: ["Tech 1", "Tech 2", "Tech 3"],
+    tags: ["React", "TypeScript", "Supabase", "PostgreSQL"],
+    imageFit: "contain",
+    images: [
+      "/images/projects/plan-b-neo/IMG_3949.PNG",
+      "/images/projects/plan-b-neo/IMG_3950.PNG",
+    ],
   },
   {
     slug: "plan-b-sales-app",
     title: "Plan B Sales App",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
-    tags: ["Tech 1", "Tech 2", "Tech 3"],
+    tags: ["React", "TypeScript", "Supabase", "PostgreSQL"],
+    imageFit: "contain",
+    images: [
+      "/images/projects/pbnz-sales/IMG_3931.PNG",
+      "/images/projects/pbnz-sales/IMG_3961.PNG",
+    ],
   },
   {
     slug: "tarifrechner",
     title: "Tarifrechner",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
-    tags: ["Tech 1", "Tech 2", "Tech 3"],
+    tags: ["React", "TypeScript", "Python"],
+    imageFit: "contain",
+    images: [
+      "/images/projects/tarifrechner/02.jpg",
+      "/images/projects/tarifrechner/01.jpg",
+    ],
   },
 ];
 
