@@ -26,7 +26,8 @@ export const workProjects: WorkProject[] = [
   {
     slug: "gamification",
     title: "Gamification",
-    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    description:
+      "Gamification-App mit Leveln, Fortschrittsbalken, Quests, Badges und Item Shop. Wer Lerninhalte abschließt, sammelt Energie, Diamanten und Tages-Streaks.",
     tags: ["React", "TypeScript", "Python"],
     imageFit: "contain",
     images: [
@@ -36,13 +37,15 @@ export const workProjects: WorkProject[] = [
   {
     slug: "ki-scanner",
     title: "KI Scanner",
-    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    description:
+      "KI-gestützter Scanner, der Dokumente wie Stromrechnungen automatisch auswertet und die relevanten Daten ausliest.",
     tags: ["React", "TypeScript", "Python"],
   },
   {
     slug: "plan-b-neo-app",
     title: "Plan B Neo App",
-    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    description:
+      "Kunden-App mit Wallet, Ein- und Auszahlung und Power Units für Stromguthaben. Dazu ein Tagespreis-Chart in 15-Minuten-Schritten, Tarifrechner und Freunde-werben-Prämien.",
     tags: ["React", "TypeScript", "Supabase", "PostgreSQL"],
     imageFit: "contain",
     images: [
@@ -53,7 +56,8 @@ export const workProjects: WorkProject[] = [
   {
     slug: "plan-b-sales-app",
     title: "Plan B Sales App",
-    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    description:
+      "App für Vertriebspartner mit Umsatz-, Team- und Bestellübersicht sowie Karrierestufe. Kundenliste mit Suche, Vertragsdetails und Kontaktaktionen.",
     tags: ["React", "TypeScript", "Supabase", "PostgreSQL"],
     imageFit: "contain",
     images: [
@@ -64,7 +68,8 @@ export const workProjects: WorkProject[] = [
   {
     slug: "tarifrechner",
     title: "Tarifrechner",
-    description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
+    description:
+      "Interner Strompreis-Tarifrechner mit Reglern für Grund-, Arbeits- und Einkaufspreis. Berechnet Gesamtpreis, Marge und Neukundenbonus und zeigt die eigene Position im Marktvergleich.",
     tags: ["React", "TypeScript", "Python"],
     imageFit: "contain",
     images: [
