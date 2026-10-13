@@ -11,7 +11,9 @@ export interface WorkProject {
   tags: string[];
   images?: string[];
   liveUrl?: string;
+  githubUrl?: string;
   note?: string;
+  imageFit?: "cover" | "contain";
 }
 
 export const workExperience: WorkExperience = {
@@ -66,6 +68,10 @@ export const personalProjects: WorkProject[] = [
       "Dungeon-Crawler im Browser mit zufällig generierten Ebenen, Bosskampf, Beute in vier Seltenheitsstufen und automatischem Speicherstand. Die Musik wird live im Code erzeugt, ohne Audiodateien.",
     tags: ["Phaser 4", "TypeScript", "Vite", "Web Audio API"],
     liveUrl: "https://abgrund-bay.vercel.app",
+    githubUrl: "https://github.com/Parazim94/Diablo",
+    images: ["gameplay", "boss", "inventory", "menu", "mobile"].map(
+      (name) => `/images/projects/abgrund/${name}.png`,
+    ),
   },
   {
     slug: "karamasow-begleiter",
@@ -74,6 +80,18 @@ export const personalProjects: WorkProject[] = [
       "Spoilerfreier Lesebegleiter für „Die Brüder Karamasow“ als PWA. Inhalte schalten sich erst mit dem Lesestand frei, dazu Figuren, Beziehungskarte, Notizen und ein KI-Gesprächspartner über die Gemini-API.",
     tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "PWA", "Gemini API"],
     liveUrl: "https://brueder-karamasow.vercel.app",
+    githubUrl: "https://github.com/Parazim94/Br-der-Karamasow",
+    imageFit: "contain",
+    images: [
+      "overview",
+      "01-heute",
+      "02-kapitel",
+      "04-figur",
+      "05-beziehungen",
+      "06-notizen",
+      "07-tipps",
+      "08-philosophieren",
+    ].map((name) => `/images/projects/karamasow-begleiter/${name}.png`),
   },
   {
     slug: "run-analytics",

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
+import { GithubIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +46,11 @@ const item = {
 function ProjectImageGallery({
   images,
   title,
+  fit = "cover",
 }: {
   images: string[];
   title: string;
+  fit?: "cover" | "contain";
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -66,7 +69,7 @@ function ProjectImageGallery({
         alt={`${title} – Screenshot ${activeIndex + 1}`}
         fill
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        className="rounded-t-xl object-cover"
+        className={`rounded-t-xl ${fit === "contain" ? "object-contain" : "object-cover"}`}
       />
 
       {images.length > 1 && (
@@ -113,7 +116,11 @@ function ProjectCard({ project }: { project: WorkProject }) {
       <Card className="flex h-full flex-col overflow-hidden pt-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
         <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
           {project.images && project.images.length > 0 ? (
-            <ProjectImageGallery images={project.images} title={project.title} />
+            <ProjectImageGallery
+              images={project.images}
+              title={project.title}
+              fit={project.imageFit}
+            />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
               <ImageIcon className="h-6 w-6" aria-hidden="true" />
@@ -135,14 +142,26 @@ function ProjectCard({ project }: { project: WorkProject }) {
           ))}
         </CardContent>
 
-        <CardFooter>
-          {project.liveUrl ? (
-            <Button asChild size="sm" variant="outline">
-              <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                <ExternalLink />
-                Live Demo
-              </a>
-            </Button>
+        <CardFooter className="gap-2">
+          {project.liveUrl || project.githubUrl ? (
+            <>
+              {project.liveUrl ? (
+                <Button asChild size="sm" variant="outline">
+                  <a href={project.liveUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink />
+                    Live Demo
+                  </a>
+                </Button>
+              ) : null}
+              {project.githubUrl ? (
+                <Button asChild size="sm" variant="ghost">
+                  <a href={project.githubUrl} target="_blank" rel="noreferrer">
+                    <GithubIcon className="h-4 w-4" />
+                    Code
+                  </a>
+                </Button>
+              ) : null}
+            </>
           ) : (
             <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <Lock className="h-3.5 w-3.5" aria-hidden="true" />
