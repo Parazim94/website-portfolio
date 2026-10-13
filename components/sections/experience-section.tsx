@@ -196,6 +196,23 @@ function ProjectGrid({ projects }: { projects: WorkProject[] }) {
   );
 }
 
+export function PersonalProjectsSection() {
+  return (
+    <section
+      id="personal-projects"
+      className="scroll-mt-16 border-t border-border/40 py-24"
+    >
+      <SectionHeading
+        eyebrow={personalProjectsGroup.title}
+        title={personalProjectsGroup.title}
+        description={personalProjectsGroup.subtitle}
+      />
+
+      <ProjectGrid projects={personalProjects} />
+    </section>
+  );
+}
+
 export function ExperienceSection() {
   return (
     <section
@@ -205,7 +222,7 @@ export function ExperienceSection() {
       <SectionHeading
         eyebrow="Berufserfahrung"
         title="Berufserfahrung"
-        description="Ausgewählte Projekte aus meiner beruflichen Praxis und eigene Arbeiten."
+        description="Ausgewählte Projekte aus meiner beruflichen Praxis."
       />
 
       <div className="mt-10 flex flex-col gap-1 border-b border-border/40 pb-6 sm:flex-row sm:items-baseline sm:justify-between">
@@ -221,15 +238,6 @@ export function ExperienceSection() {
       </div>
 
       <ProjectGrid projects={workProjects} />
-
-      <div className="mt-16 border-b border-border/40 pb-6">
-        <p className="text-lg font-semibold">{personalProjectsGroup.title}</p>
-        <p className="text-sm text-muted-foreground">
-          {personalProjectsGroup.subtitle}
-        </p>
-      </div>
-
-      <ProjectGrid projects={personalProjects} />
     </section>
   );
 }

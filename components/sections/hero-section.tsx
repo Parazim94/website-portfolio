@@ -94,7 +94,7 @@ export function HeroSection() {
 
           <motion.div variants={item}>
             <Button size="lg" asChild>
-              <a href="#projects">Projekte ansehen</a>
+              <a href="#personal-projects">Projekte ansehen</a>
             </Button>
           </motion.div>
 

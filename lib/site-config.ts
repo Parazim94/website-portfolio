@@ -36,8 +36,9 @@ export const navLinks: NavLink[] = [
   { label: "Start", href: "#hero" },
   { label: "Über mich", href: "#about" },
   { label: "Ausbildung", href: "#education" },
+  { label: "Eigene Projekte", href: "#personal-projects" },
   { label: "Berufserfahrung", href: "#experience" },
-  { label: "Projekte", href: "#projects" },
+  { label: "Ausbildungsarbeiten", href: "#projects" },
   { label: "Skills", href: "#skills" },
   { label: "Kontakt", href: "#contact" },
 ];

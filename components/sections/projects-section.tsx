@@ -37,9 +37,9 @@ export function ProjectsSection() {
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
       <SectionHeading
-        eyebrow="Projekte"
-        title="Ausgewählte Arbeiten"
-        description="Eine Auswahl an Projekten, an denen ich zuletzt gearbeitet habe."
+        eyebrow="Ausbildung & Weiterbildung"
+        title="Ausbildungs- und Weiterbildungsarbeiten"
+        description="Projekte aus meiner Ausbildung und Weiterbildung."
       />
 
       <motion.div
