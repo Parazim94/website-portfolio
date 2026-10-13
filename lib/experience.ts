@@ -10,6 +10,8 @@ export interface WorkProject {
   description: string;
   tags: string[];
   images?: string[];
+  liveUrl?: string;
+  note?: string;
 }
 
 export const workExperience: WorkExperience = {
@@ -48,5 +50,37 @@ export const workProjects: WorkProject[] = [
     title: "Tarifrechner",
     description: "Kurze Beschreibung des Projekts und der eigenen Rolle darin.",
     tags: ["Tech 1", "Tech 2", "Tech 3"],
+  },
+];
+
+export const personalProjectsGroup = {
+  title: "Eigene Projekte",
+  subtitle: "Selbstständig konzipiert und umgesetzt",
+};
+
+export const personalProjects: WorkProject[] = [
+  {
+    slug: "abgrund",
+    title: "Abgrund",
+    description:
+      "Dungeon-Crawler im Browser mit zufällig generierten Ebenen, Bosskampf, Beute in vier Seltenheitsstufen und automatischem Speicherstand. Die Musik wird live im Code erzeugt, ohne Audiodateien.",
+    tags: ["Phaser 4", "TypeScript", "Vite", "Web Audio API"],
+    liveUrl: "https://abgrund-bay.vercel.app",
+  },
+  {
+    slug: "karamasow-begleiter",
+    title: "Karamasow-Begleiter",
+    description:
+      "Spoilerfreier Lesebegleiter für „Die Brüder Karamasow“ als PWA. Inhalte schalten sich erst mit dem Lesestand frei, dazu Figuren, Beziehungskarte, Notizen und ein KI-Gesprächspartner über die Gemini-API.",
+    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "PWA", "Gemini API"],
+    liveUrl: "https://brueder-karamasow.vercel.app",
+  },
+  {
+    slug: "run-analytics",
+    title: "Run Analytics",
+    description:
+      "Lokales Dashboard für Lauf- und Fitnessdaten mit Karte, Kilometer-Splits, Trainingsbelastung und Schlafauswertung. Statistik mit Bootstrap-Intervallen, die ausweist, wie belastbar die Zahlen sind.",
+    tags: ["Next.js 16", "React 19", "TypeScript", "SQLite", "Python", "Recharts", "Leaflet"],
+    note: "Läuft lokal – Demo auf Anfrage",
   },
 ];

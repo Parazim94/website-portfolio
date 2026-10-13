@@ -3,10 +3,17 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ImageIcon, Lock } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  ImageIcon,
+  Lock,
+} from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,7 +22,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { workExperience, workProjects } from "@/lib/experience";
+import {
+  personalProjects,
+  personalProjectsGroup,
+  workExperience,
+  workProjects,
+  type WorkProject,
+} from "@/lib/experience";
 
 const container = {
   hidden: {},
@@ -94,6 +107,70 @@ function ProjectImageGallery({
   );
 }
 
+function ProjectCard({ project }: { project: WorkProject }) {
+  return (
+    <motion.div variants={item} className="h-full">
+      <Card className="flex h-full flex-col overflow-hidden pt-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+        <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
+          {project.images && project.images.length > 0 ? (
+            <ProjectImageGallery images={project.images} title={project.title} />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <ImageIcon className="h-6 w-6" aria-hidden="true" />
+              <span className="text-xs">Screenshot folgt</span>
+            </div>
+          )}
+        </div>
+
+        <CardHeader>
+          <CardTitle>{project.title}</CardTitle>
+          <CardDescription>{project.description}</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-1 flex-wrap content-start gap-1.5">
+          {project.tags.map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag}
+            </Badge>
+          ))}
+        </CardContent>
+
+        <CardFooter>
+          {project.liveUrl ? (
+            <Button asChild size="sm" variant="outline">
+              <a href={project.liveUrl} target="_blank" rel="noreferrer">
+                <ExternalLink />
+                Live Demo
+              </a>
+            </Button>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+              {project.note ?? "Vertraulich – Details auf Anfrage"}
+            </span>
+          )}
+        </CardFooter>
+      </Card>
+    </motion.div>
+  );
+}
+
+function ProjectGrid({ projects }: { projects: WorkProject[] }) {
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={container}
+      className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {projects.map((project) => (
+        <ProjectCard key={project.slug} project={project} />
+      ))}
+    </motion.div>
+  );
+}
+
 export function ExperienceSection() {
   return (
     <section
@@ -103,7 +180,7 @@ export function ExperienceSection() {
       <SectionHeading
         eyebrow="Berufserfahrung"
         title="Berufserfahrung"
-        description="Ausgewählte Projekte aus meiner beruflichen Praxis."
+        description="Ausgewählte Projekte aus meiner beruflichen Praxis und eigene Arbeiten."
       />
 
       <div className="mt-10 flex flex-col gap-1 border-b border-border/40 pb-6 sm:flex-row sm:items-baseline sm:justify-between">
@@ -118,50 +195,16 @@ export function ExperienceSection() {
         </p>
       </div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={container}
-        className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {workProjects.map((project) => (
-          <motion.div key={project.slug} variants={item} className="h-full">
-            <Card className="flex h-full flex-col overflow-hidden pt-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
-              <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
-                {project.images && project.images.length > 0 ? (
-                  <ProjectImageGallery images={project.images} title={project.title} />
-                ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                    <ImageIcon className="h-6 w-6" aria-hidden="true" />
-                    <span className="text-xs">Screenshot folgt</span>
-                  </div>
-                )}
-              </div>
+      <ProjectGrid projects={workProjects} />
 
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-                <CardDescription>{project.description}</CardDescription>
-              </CardHeader>
+      <div className="mt-16 border-b border-border/40 pb-6">
+        <p className="text-lg font-semibold">{personalProjectsGroup.title}</p>
+        <p className="text-sm text-muted-foreground">
+          {personalProjectsGroup.subtitle}
+        </p>
+      </div>
 
-              <CardContent className="flex flex-1 flex-wrap content-start gap-1.5">
-                {project.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </CardContent>
-
-              <CardFooter>
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-                  Vertraulich – Details auf Anfrage
-                </span>
-              </CardFooter>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
+      <ProjectGrid projects={personalProjects} />
     </section>
   );
 }
