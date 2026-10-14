@@ -9,6 +9,8 @@ import {
   PHONE_PATTERN,
   type ContactTopic,
 } from "@/lib/contact-topics";
+import { defaultLocale, hasLocale, type Locale } from "@/lib/i18n";
+import { getUi } from "@/lib/i18n/ui";
 import { siteConfig } from "@/lib/site-config";
 
 export interface ContactFormState {
@@ -22,9 +24,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-const SUCCESS_MESSAGE =
-  "Danke für deine Nachricht! Ich melde mich so schnell wie möglich.";
-
 // Pro Server-Instanz im Speicher: bremst Missbrauch, ersetzt aber kein verteiltes Limit.
 const submissions = new Map<string, number[]>();
 
@@ -56,9 +55,17 @@ export async function sendContactMessage(
   _prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  const requestedLocale = formData.get("locale");
+  const locale: Locale =
+    typeof requestedLocale === "string" && hasLocale(requestedLocale)
+      ? requestedLocale
+      : defaultLocale;
+  const ui = getUi(locale);
+  const text = ui.contact;
+
   // Honeypot: Menschen sehen das Feld nicht, Bots füllen es aus.
   if (formData.get("website")) {
-    return { status: "success", message: SUCCESS_MESSAGE };
+    return { status: "success", message: text.success };
   }
 
   const read = (key: string) => {
@@ -86,34 +93,33 @@ export async function sendContactMessage(
 
   for (const field of extraFields) {
     if (values[field.name].length > EXTRA_FIELD_MAX) {
-      errors[field.name] =
-        `${field.label} ist zu lang (maximal ${EXTRA_FIELD_MAX} Zeichen).`;
+      errors[field.name] = text.errors.fieldLong(
+        field.label[locale],
+        EXTRA_FIELD_MAX,
+      );
     }
   }
 
   if (values.name.length < 2) {
-    errors.name = "Bitte gib deinen Namen an (mindestens 2 Zeichen).";
+    errors.name = text.errors.name;
   }
   if (!EMAIL_PATTERN.test(values.email)) {
-    errors.email =
-      "Bitte gib eine gültige E-Mail-Adresse an, z. B. max@mustermann.de.";
+    errors.email = text.errors.email;
   }
   if (values.phone !== "" && !PHONE_PATTERN.test(values.phone)) {
-    errors.phone =
-      "Die Telefonnummer ist ungültig. Erlaubt sind Ziffern, Leerzeichen und + ( ) / -, z. B. +49 170 1234567. Oder lass das Feld leer.";
+    errors.phone = text.errors.phone;
   }
   if (!topic) {
-    errors.topic = "Bitte wähle aus, worum es geht.";
+    errors.topic = text.errors.topic;
   }
   if (values.message.length < 10) {
-    errors.message = `Deine Nachricht ist zu kurz (${values.message.length} von mindestens 10 Zeichen).`;
+    errors.message = text.errors.messageShort(values.message.length);
   }
 
   if (!topic || Object.keys(errors).length > 0) {
     return {
       status: "error",
-      message:
-        "Die Nachricht wurde nicht gesendet. Bitte korrigiere die markierten Felder.",
+      message: text.errors.invalid,
       values,
       errors,
     };
@@ -128,8 +134,7 @@ export async function sendContactMessage(
   if (isRateLimited(clientIp)) {
     return {
       status: "error",
-      message:
-        "Du hast gerade mehrere Nachrichten gesendet. Bitte warte ein paar Minuten oder schreib mir direkt per E-Mail.",
+      message: text.errors.rateLimit,
       values,
     };
   }
@@ -139,8 +144,7 @@ export async function sendContactMessage(
   if (!apiKey) {
     return {
       status: "error",
-      message:
-        "E-Mail-Versand ist aktuell nicht konfiguriert. Bitte kontaktiere mich direkt per E-Mail.",
+      message: text.errors.notConfigured,
     };
   }
 
@@ -149,10 +153,11 @@ export async function sendContactMessage(
   const emailBody = [
     `Von: ${name} <${email}>`,
     `Telefon: ${phone || "–"}`,
-    `Thema: ${topic.label}`,
+    `Thema: ${topic.label.de}`,
+    `Sprache der Seite: ${locale}`,
     ...extraFields
       .filter((field) => values[field.name])
-      .map((field) => `${field.label}: ${values[field.name]}`),
+      .map((field) => `${field.label.de}: ${values[field.name]}`),
     "",
     message,
   ].join("\n");
@@ -162,23 +167,21 @@ export async function sendContactMessage(
       from: `Portfolio Kontaktformular <${siteConfig.contactFromAddress}>`,
       to: siteConfig.email,
       replyTo: email,
-      subject: `[${topic.label}] Neue Nachricht von ${name.replace(/\s+/g, " ")}`,
+      subject: `[${topic.label.de}] Neue Nachricht von ${name.replace(/\s+/g, " ")}`,
       text: emailBody,
     });
 
     if (error) {
       return {
         status: "error",
-        message:
-          "Die Nachricht konnte nicht gesendet werden. Bitte versuch es später erneut.",
+        message: text.errors.sendFailed,
         values,
       };
     }
   } catch {
     return {
       status: "error",
-      message:
-        "Die Nachricht konnte nicht gesendet werden. Bitte versuch es später erneut.",
+      message: text.errors.sendFailed,
       values,
     };
   }
@@ -189,30 +192,30 @@ export async function sendContactMessage(
       from: `${siteConfig.name} <${siteConfig.contactFromAddress}>`,
       to: email,
       replyTo: siteConfig.email,
-      subject: "Deine Nachricht ist angekommen",
+      subject: text.confirmation.subject,
       text: [
-        `Hallo ${name.replace(/\s+/g, " ")},`,
+        text.confirmation.greeting(name.replace(/\s+/g, " ")),
         "",
-        `danke für deine Nachricht zum Thema „${topic.label}“. Ich habe sie erhalten und melde mich so schnell wie möglich bei dir.`,
+        text.confirmation.body(topic.label[locale]),
         "",
-        "Zur Erinnerung, das hast du geschrieben:",
+        text.confirmation.reminder,
         "",
         message
           .split("\n")
           .map((line) => `> ${line}`)
           .join("\n"),
         "",
-        "Viele Grüße",
+        text.confirmation.regards,
         siteConfig.name,
         "",
-        "Diese Nachricht wurde automatisch versendet. Du kannst direkt darauf antworten.",
+        text.confirmation.automatic,
       ].join("\n"),
     });
   } catch {}
 
   return {
     status: "success",
-    message: SUCCESS_MESSAGE,
+    message: text.success,
     values: { name },
   };
 }

@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocale, useT, useUi } from "@/components/providers/locale-provider";
 import {
   contactTopics,
   EXTRA_FIELD_MAX,
-  RESPONSE_TIME,
   type ContactTopic,
 } from "@/lib/contact-topics";
 import {
@@ -50,18 +50,21 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const ui = useUi();
 
   return (
     <Button type="submit" disabled={pending} className="w-full sm:w-auto">
       {pending ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : null}
-      Nachricht senden
+      {ui.contact.send}
     </Button>
   );
 }
 
 function ThankYou({ name, onReset }: { name?: string; onReset: () => void }) {
+  const ui = useUi();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.96 }}
@@ -97,21 +100,23 @@ function ThankYou({ name, onReset }: { name?: string; onReset: () => void }) {
       </svg>
 
       <h3 className="text-2xl font-semibold tracking-tight">
-        {name ? `Danke, ${name.split(" ")[0]}!` : "Danke!"}
+        {ui.contact.thanks(name?.split(" ")[0])}
       </h3>
       <p className="max-w-md text-muted-foreground">
-        Deine Nachricht ist bei mir angekommen. Ich melde mich in der Regel{" "}
-        {RESPONSE_TIME} bei dir.
+        {ui.contact.thanksText(ui.contact.responseTime)}
       </p>
 
       <Button variant="outline" onClick={onReset} className="mt-2">
-        Weitere Nachricht senden
+        {ui.contact.another}
       </Button>
     </motion.div>
   );
 }
 
 function ContactForm({ onReset }: { onReset: () => void }) {
+  const locale = useLocale();
+  const t = useT();
+  const ui = useUi();
   const [state, formAction] = useActionState(sendContactMessage, initialState);
   const values = state.values ?? emptyValues;
   const errors = state.errors ?? {};
@@ -135,11 +140,13 @@ function ContactForm({ onReset }: { onReset: () => void }) {
         transition={{ duration: 0.5 }}
         className="mt-10 flex max-w-2xl flex-col gap-5"
       >
+        <input type="hidden" name="locale" value={locale} />
+
         <div
           aria-hidden="true"
           className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
         >
-          <label htmlFor="contact-website">Website (bitte leer lassen)</label>
+          <label htmlFor="contact-website">{ui.contact.honeypot}</label>
           <input
             id="contact-website"
             name="website"
@@ -151,7 +158,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="contact-name">Name</Label>
+            <Label htmlFor="contact-name">{ui.contact.name}</Label>
             <Input
               id="contact-name"
               aria-invalid={!!errors.name}
@@ -168,7 +175,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="contact-email">E-Mail</Label>
+            <Label htmlFor="contact-email">{ui.contact.email}</Label>
             <Input
               id="contact-email"
               aria-invalid={!!errors.email}
@@ -189,9 +196,9 @@ function ContactForm({ onReset }: { onReset: () => void }) {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-phone">
-            Telefon{" "}
+            {ui.contact.phone}{" "}
             <span className="font-normal text-muted-foreground">
-              (optional)
+              {ui.contact.optional}
             </span>
           </Label>
           <Input
@@ -213,7 +220,9 @@ function ContactForm({ onReset }: { onReset: () => void }) {
           aria-invalid={!!errors.topic}
           aria-describedby={errors.topic ? "contact-topic-error" : undefined}
         >
-          <legend className="mb-2 text-sm font-medium">Worum geht es?</legend>
+          <legend className="mb-2 text-sm font-medium">
+            {ui.contact.topic}
+          </legend>
           <div className="flex flex-wrap gap-2">
             {contactTopics.map((topic, index) => (
               <label
@@ -229,7 +238,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
                   required={index === 0}
                   className="sr-only"
                 />
-                {topic.label}
+                {t(topic.label)}
               </label>
             ))}
           </div>
@@ -250,15 +259,15 @@ function ContactForm({ onReset }: { onReset: () => void }) {
                 {selectedTopic.fields.map((field) => (
                   <div key={field.name} className="flex flex-col gap-2">
                     <Label htmlFor={`contact-${field.name}`}>
-                      {field.label}{" "}
+                      {t(field.label)}{" "}
                       <span className="font-normal text-muted-foreground">
-                        (optional)
+                        {ui.contact.optional}
                       </span>
                     </Label>
                     <Input
                       id={`contact-${field.name}`}
                       name={field.name}
-                      placeholder={field.placeholder}
+                      placeholder={t(field.placeholder)}
                       defaultValue={values[field.name] ?? ""}
                       maxLength={EXTRA_FIELD_MAX}
                       aria-invalid={!!errors[field.name]}
@@ -281,7 +290,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
         </AnimatePresence>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="contact-message">Nachricht</Label>
+          <Label htmlFor="contact-message">{ui.contact.message}</Label>
           <Textarea
             id="contact-message"
             aria-invalid={!!errors.message}
@@ -292,7 +301,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
             rows={6}
             minLength={10}
             maxLength={MESSAGE_MAX}
-            placeholder="Hallo Denis, ich würde gern mit dir über … sprechen."
+            placeholder={ui.contact.messagePlaceholder}
             defaultValue={values.message}
             required
             className={PLACEHOLDER_STYLE}
@@ -302,7 +311,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
 
         {state.status === "error" ? (
           <Alert variant="destructive">
-            <AlertTitle>Fehler</AlertTitle>
+            <AlertTitle>{ui.contact.error}</AlertTitle>
             <AlertDescription>{state.message}</AlertDescription>
           </Alert>
         ) : null}
@@ -314,6 +323,7 @@ function ContactForm({ onReset }: { onReset: () => void }) {
 }
 
 export function ContactSection() {
+  const ui = useUi();
   const [formKey, setFormKey] = useState(0);
 
   return (
@@ -322,9 +332,9 @@ export function ContactSection() {
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
       <SectionHeading
-        eyebrow="Kontakt"
-        title="Lass uns sprechen"
-        description="Du hast ein Projekt, eine Frage oder einfach Lust auf Austausch? Schreib mir."
+        eyebrow={ui.contact.eyebrow}
+        title={ui.contact.title}
+        description={ui.contact.description}
       />
 
       <ContactForm key={formKey} onReset={() => setFormKey((key) => key + 1)} />

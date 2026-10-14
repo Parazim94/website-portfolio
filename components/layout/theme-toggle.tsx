@@ -4,6 +4,7 @@ import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { useUi } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 
 function subscribe() {
@@ -21,6 +22,7 @@ function useMounted() {
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useMounted();
+  const ui = useUi();
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -30,7 +32,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      aria-label="Farbschema umschalten"
+      aria-label={ui.nav.toggleTheme}
       onClick={toggleTheme}
     >
       {mounted && resolvedTheme === "dark" ? (

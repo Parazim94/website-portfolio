@@ -21,11 +21,15 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { AccentPicker } from "@/components/layout/accent-picker";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { useT, useUi } from "@/components/providers/locale-provider";
 import { navLinks, siteConfig } from "@/lib/site-config";
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false);
+  const t = useT();
+  const ui = useUi();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -45,7 +49,7 @@ export function Navbar() {
                   asChild
                   className={navigationMenuTriggerStyle()}
                 >
-                  <Link href={link.href}>{link.label}</Link>
+                  <Link href={link.href}>{t(link.label)}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -53,6 +57,7 @@ export function Navbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-1">
+          <LanguageSwitcher />
           <AccentPicker />
           <ThemeToggle />
 
@@ -62,7 +67,7 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 className="md:hidden"
-                aria-label="Menü öffnen"
+                aria-label={ui.nav.openMenu}
               >
                 <Menu className="h-5 w-5" />
               </Button>
@@ -78,7 +83,7 @@ export function Navbar() {
                       href={link.href}
                       className="rounded-lg px-2 py-2 text-sm font-medium hover:bg-muted"
                     >
-                      {link.label}
+                      {t(link.label)}
                     </Link>
                   </SheetClose>
                 ))}

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Check, Palette } from "lucide-react";
 
+import { useT, useUi } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import {
   accents,
@@ -14,6 +15,8 @@ import { cn } from "@/lib/utils";
 
 export function AccentPicker() {
   const [open, setOpen] = React.useState(false);
+  const t = useT();
+  const ui = useUi();
   const ref = React.useRef<HTMLDivElement>(null);
   const current = React.useSyncExternalStore(
     subscribeAccent,
@@ -42,7 +45,7 @@ export function AccentPicker() {
       <Button
         variant="ghost"
         size="icon"
-        aria-label="Akzentfarbe wählen"
+        aria-label={ui.nav.chooseAccent}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
@@ -55,9 +58,9 @@ export function AccentPicker() {
             <button
               key={accent.id}
               type="button"
-              aria-label={accent.label}
+              aria-label={t(accent.label)}
               aria-pressed={current === accent.id}
-              title={accent.label}
+              title={t(accent.label)}
               onClick={() => setAccent(accent.id)}
               style={{ backgroundColor: accent.swatch }}
               className={cn(

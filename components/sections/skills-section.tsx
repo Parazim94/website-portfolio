@@ -7,7 +7,8 @@ import { SectionHeading } from "@/components/section-heading";
 import { SKILL_FOCUS_EVENT } from "@/lib/skill-focus";
 import { allProjects } from "@/lib/all-projects";
 import { projectsForSkill } from "@/lib/skill-projects";
-import { skillGroups, type SkillGroup } from "@/lib/skills";
+import { skillGroups, skillLabel, type SkillGroup } from "@/lib/skills";
+import { useLocale, useT, useUi } from "@/components/providers/locale-provider";
 import { cn } from "@/lib/utils";
 
 const marqueeRows = [
@@ -37,6 +38,8 @@ function MarqueeRow({
   skills: string[];
   reverse?: boolean;
 }) {
+  const locale = useLocale();
+
   return (
     <div className="marquee overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
       <div
@@ -50,7 +53,7 @@ function MarqueeRow({
             key={`${skill}-${index}`}
             className="rounded-full border border-border bg-card px-4 py-1.5 text-sm whitespace-nowrap text-muted-foreground"
           >
-            {skill}
+            {skillLabel(skill, locale)}
           </span>
         ))}
       </div>
@@ -58,14 +61,8 @@ function MarqueeRow({
   );
 }
 
-const terminalCommands = [
-  'claude "Plane das Feature und schlage einen Ansatz vor"',
-  'claude "Setze den Plan um und teste ihn"',
-  'claude "Prüfe den Diff auf Fehler und Randfälle"',
-  'claude "Schreibe Tests für die neue API"',
-];
-
 function TypingTerminal() {
+  const terminalCommands = useUi().skills.terminal;
   const [text, setText] = useState(terminalCommands[0]);
 
   useEffect(() => {
@@ -97,7 +94,7 @@ function TypingTerminal() {
 
     timer = setTimeout(tick, 600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [terminalCommands]);
 
   return (
     <div
@@ -138,6 +135,9 @@ function SkillNetwork({
   group: SkillGroup;
   initialSelected: string | null;
 }) {
+  const locale = useLocale();
+  const t = useT();
+  const ui = useUi();
   const [selected, setSelected] = useState<string | null>(initialSelected);
   const [hovered, setHovered] = useState<string | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
@@ -231,7 +231,7 @@ function SkillNetwork({
                     : "border-primary/30 bg-primary/10 text-foreground",
                 )}
               >
-                {skill}
+                {skillLabel(skill, locale)}
                 {count > 0 ? (
                   <span className="ml-1.5 text-xs opacity-70">{count}</span>
                 ) : null}
@@ -263,9 +263,9 @@ function SkillNetwork({
       <p className="mt-10 mb-3 text-xs text-muted-foreground">
         {focus
           ? linked.length > 0
-            ? `${focus} kommt in ${linked.length} ${linked.length === 1 ? "Projekt" : "Projekten"} vor`
-            : `${focus} ist eine Arbeitsweise oder ein Werkzeug ohne eigene Projekt-Zuordnung`
-          : "Klicke oder fahre über einen Skill, um zu sehen, wo ich ihn eingesetzt habe."}
+            ? ui.skills.usedIn(skillLabel(focus, locale), linked.length)
+            : ui.skills.noProjects(skillLabel(focus, locale))
+          : ui.skills.hint}
       </p>
 
       <ul className="flex flex-wrap gap-2">
@@ -289,7 +289,7 @@ function SkillNetwork({
                       : "border-border text-muted-foreground",
                 )}
               >
-                {project.title}
+                {t(project.title)}
               </a>
             </li>
           );
@@ -300,6 +300,8 @@ function SkillNetwork({
 }
 
 export function SkillsSection() {
+  const t = useT();
+  const ui = useUi();
   const [activeId, setActiveId] = useState(skillGroups[0].id);
   const [pendingSkill, setPendingSkill] = useState<string | null>(null);
   const [focusNonce, setFocusNonce] = useState(0);
@@ -335,9 +337,9 @@ export function SkillsSection() {
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
       <SectionHeading
-        eyebrow="Skills"
-        title="Womit ich arbeite"
-        description="Ein Überblick über die Technologien und Werkzeuge, mit denen ich täglich arbeite."
+        eyebrow={ui.skills.eyebrow}
+        title={ui.skills.title}
+        description={ui.skills.description}
       />
 
       <div className="mt-10 flex flex-col gap-3" aria-hidden="true">
@@ -348,7 +350,7 @@ export function SkillsSection() {
 
       <div
         role="tablist"
-        aria-label="Skill-Kategorien"
+        aria-label={ui.skills.categories}
         className="mt-10 flex flex-wrap gap-2"
       >
         {skillGroups.map((group) => {
@@ -386,7 +388,7 @@ export function SkillsSection() {
                 )}
                 aria-hidden="true"
               />
-              <span className="relative">{group.title}</span>
+              <span className="relative">{t(group.title)}</span>
             </button>
           );
         })}
@@ -417,7 +419,9 @@ export function SkillsSection() {
             transition={{ duration: 0.2 }}
             className="relative"
           >
-            <p className="max-w-2xl text-muted-foreground">{active.summary}</p>
+            <p className="max-w-2xl text-muted-foreground">
+              {t(active.summary)}
+            </p>
 
             {active.id === "ai" ? <TypingTerminal /> : null}
 
@@ -440,13 +444,13 @@ export function SkillsSection() {
               >
                 {active.details.map((detail) => (
                   <motion.div
-                    key={detail.name}
+                    key={detail.name.de}
                     variants={chip}
                     className="rounded-xl border border-border bg-background/60 p-4"
                   >
-                    <p className="font-medium">{detail.name}</p>
+                    <p className="font-medium">{t(detail.name)}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {detail.text}
+                      {t(detail.text)}
                     </p>
                   </motion.div>
                 ))}

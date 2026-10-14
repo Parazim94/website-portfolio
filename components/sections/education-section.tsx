@@ -6,7 +6,8 @@ import { ExternalLink, GraduationCap, X } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
-import { education, focusSkillLinks, type Education } from "@/lib/education";
+import { useT, useUi } from "@/components/providers/locale-provider";
+import { education, type Education } from "@/lib/education";
 import { focusSkill } from "@/lib/skill-focus";
 
 // Chronologisch: ältester Eintrag oben, der Weg läuft nach unten.
@@ -35,6 +36,7 @@ function CertificateLightbox({
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const ui = useUi();
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -60,13 +62,13 @@ function CertificateLightbox({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`Zertifikat ${entry.institute}`}
+      aria-label={ui.education.certificate(entry.institute)}
       className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-4 bg-black/75 p-4 backdrop-blur-sm"
     >
       <motion.img
         layoutId={`certificate-${entry.slug}`}
         src={entry.certificatePreview}
-        alt={`Zertifikat ${entry.institute}`}
+        alt={ui.education.certificate(entry.institute)}
         onClick={(event) => event.stopPropagation()}
         className="max-h-[78vh] max-w-full rounded-lg bg-white object-contain shadow-2xl"
       />
@@ -79,13 +81,13 @@ function CertificateLightbox({
           <Button asChild size="sm" variant="secondary">
             <a href={entry.certificateUrl} target="_blank" rel="noreferrer">
               <ExternalLink />
-              Als PDF öffnen
+              {ui.education.openPdf}
             </a>
           </Button>
         ) : null}
         <Button ref={closeRef} size="sm" variant="secondary" onClick={onClose}>
           <X />
-          Schließen
+          {ui.education.close}
         </Button>
       </div>
     </motion.div>
@@ -104,6 +106,8 @@ function TimelineCard({
   onOpen: (slug: string) => void;
 }) {
   const fromLeft = index % 2 === 0;
+  const t = useT();
+  const ui = useUi();
 
   return (
     <motion.div
@@ -127,11 +131,11 @@ function TimelineCard({
       </div>
 
       <p className="mt-1 text-sm text-muted-foreground">
-        {entry.title} · {entry.location}
+        {t(entry.title)} · {entry.location}
       </p>
 
       {entry.detail ? (
-        <p className="mt-3 text-sm text-muted-foreground">{entry.detail}</p>
+        <p className="mt-3 text-sm text-muted-foreground">{t(entry.detail)}</p>
       ) : null}
 
       {entry.focusAreas ? (
@@ -143,24 +147,25 @@ function TimelineCard({
           className="mt-4 flex flex-wrap gap-1.5"
         >
           {entry.focusAreas.map((area) => {
-            const skill = focusSkillLinks[area];
+            const skill = area.skill;
+            const label = t(area.label);
 
             return (
-              <motion.li key={area} variants={chip}>
+              <motion.li key={area.label.de} variants={chip}>
                 {skill ? (
                   <motion.button
                     type="button"
                     onClick={() => focusSkill(skill)}
-                    title={`${skill} in den Skills ansehen`}
+                    title={ui.education.viewSkill(skill)}
                     whileHover={{ scale: 1.08, y: -2 }}
                     whileTap={{ scale: 0.96 }}
                     className="cursor-pointer rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium outline-none transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
-                    {area}
+                    {label}
                   </motion.button>
                 ) : (
                   <span className="block rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-                    {area}
+                    {label}
                   </span>
                 )}
               </motion.li>
@@ -171,20 +176,24 @@ function TimelineCard({
 
       {entry.finalProject ? (
         <p className="mt-4 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Abschlussprojekt:</span>{" "}
+          <span className="font-medium text-foreground">
+            {ui.education.finalProject}
+          </span>{" "}
           <a
             href="#projects"
             className="underline decoration-primary/50 underline-offset-4 transition-colors hover:text-foreground"
           >
-            {entry.finalProject}
+            {t(entry.finalProject)}
           </a>
         </p>
       ) : null}
 
       {entry.languageLevel ? (
         <p className="mt-1 text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Sprachniveau:</span>{" "}
-          {entry.languageLevel}
+          <span className="font-medium text-foreground">
+            {ui.education.languageLevel}
+          </span>{" "}
+          {t(entry.languageLevel)}
         </p>
       ) : null}
 
@@ -193,7 +202,7 @@ function TimelineCard({
           <button
             type="button"
             onClick={() => onOpen(entry.slug)}
-            aria-label={`Zertifikat ${entry.institute} groß ansehen`}
+            aria-label={ui.education.enlarge(entry.institute)}
             className="group relative block w-40 cursor-zoom-in outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <motion.div
@@ -206,7 +215,7 @@ function TimelineCard({
                 <motion.img
                   layoutId={`certificate-${entry.slug}`}
                   src={entry.certificatePreview}
-                  alt={`Zertifikat ${entry.institute}`}
+                  alt={ui.education.certificate(entry.institute)}
                   loading="lazy"
                   className="block h-auto w-full"
                 />
@@ -219,7 +228,7 @@ function TimelineCard({
             </motion.div>
           </button>
           <p className="pb-1 text-xs text-muted-foreground">
-            Klicken zum Vergrößern
+            {ui.education.clickToEnlarge}
           </p>
         </div>
       ) : null}
@@ -228,6 +237,7 @@ function TimelineCard({
 }
 
 export function EducationSection() {
+  const ui = useUi();
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const trackRef = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({
@@ -246,9 +256,9 @@ export function EducationSection() {
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
       <SectionHeading
-        eyebrow="Ausbildung"
-        title="Ausbildung & Zertifikate"
-        description="Mein Weg in die Webentwicklung, Station für Station."
+        eyebrow={ui.education.eyebrow}
+        title={ui.education.title}
+        description={ui.education.description}
       />
 
       <ol

@@ -11,14 +11,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useT, useUi } from "@/components/providers/locale-provider";
+import type { L } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site-config";
 import { heroTechStack } from "@/lib/tech-stack";
 
-const roles = [
-  "Web-Apps",
-  "Mobile-Apps",
-  "KI-gestützte Tools",
-  "Echtzeit-Anwendungen",
+const roles: L[] = [
+  { de: "Web-Apps", en: "web apps" },
+  { de: "Mobile-Apps", en: "mobile apps" },
+  { de: "KI-gestützte Tools", en: "AI-powered tools" },
+  { de: "Echtzeit-Anwendungen", en: "real-time applications" },
 ];
 
 const nameWords = siteConfig.name.split(" ");
@@ -51,6 +53,7 @@ const nameWord = {
 
 function RotatingRole() {
   const [index, setIndex] = useState(0);
+  const t = useT();
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -66,14 +69,14 @@ function RotatingRole() {
     <span className="relative inline-flex h-[1.3em] overflow-hidden align-bottom">
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
-          key={roles[index]}
+          key={t(roles[index])}
           initial={{ y: "100%", opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "-100%", opacity: 0 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="font-semibold whitespace-nowrap text-primary"
         >
-          {roles[index]}
+          {t(roles[index])}
         </motion.span>
       </AnimatePresence>
     </span>
@@ -81,6 +84,8 @@ function RotatingRole() {
 }
 
 export function HeroSection() {
+  const t = useT();
+  const ui = useUi();
   const backdropRef = useRef<HTMLDivElement>(null);
 
   const onMouseMove = (event: MouseEvent<HTMLElement>) => {
@@ -125,12 +130,12 @@ export function HeroSection() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            {siteConfig.role}
+            {t(siteConfig.role)}
           </motion.div>
 
           <div className="flex flex-col gap-1">
             <motion.p variants={item} className="text-lg text-muted-foreground">
-              Hallo, ich bin
+              {ui.hero.greeting}
             </motion.p>
 
             <motion.h1
@@ -156,14 +161,14 @@ export function HeroSection() {
             variants={item}
             className="text-xl text-muted-foreground sm:text-2xl"
           >
-            Ich baue <RotatingRole />
+            {ui.hero.iBuild} <RotatingRole />
           </motion.p>
 
           <motion.p
             variants={item}
             className="max-w-xl text-lg text-muted-foreground"
           >
-            {siteConfig.tagline}
+            {t(siteConfig.tagline)}
           </motion.p>
 
           <motion.div
@@ -171,10 +176,10 @@ export function HeroSection() {
             className="flex flex-wrap items-center gap-3"
           >
             <Button size="lg" asChild>
-              <a href="#projects">Projekte ansehen</a>
+              <a href="#projects">{ui.hero.projects}</a>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="#contact">Kontakt</a>
+              <a href="#contact">{ui.hero.contact}</a>
             </Button>
             <Button size="icon-lg" variant="ghost" asChild>
               <a
@@ -222,7 +227,7 @@ export function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9, duration: 0.6 }}
         className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-muted-foreground/60 transition-colors hover:text-foreground"
-        aria-label="Zur nächsten Sektion scrollen"
+        aria-label={ui.hero.scrollDown}
       >
         <motion.span
           className="block"

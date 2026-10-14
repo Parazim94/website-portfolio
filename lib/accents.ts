@@ -1,12 +1,14 @@
+import type { L } from "@/lib/i18n";
+
 export const ACCENT_STORAGE_KEY = "accent";
 
 export const accents = [
-  { id: "default", label: "Neutral", swatch: "oklch(0.35 0 0)" },
-  { id: "blue", label: "Blau", swatch: "oklch(0.58 0.2 260)" },
-  { id: "violet", label: "Violett", swatch: "oklch(0.58 0.22 295)" },
-  { id: "green", label: "Grün", swatch: "oklch(0.62 0.17 155)" },
-  { id: "orange", label: "Orange", swatch: "oklch(0.7 0.18 50)" },
-  { id: "rose", label: "Rosa", swatch: "oklch(0.62 0.22 5)" },
+  { id: "default", label: { de: "Neutral", en: "Neutral" } satisfies L, swatch: "oklch(0.35 0 0)" },
+  { id: "blue", label: { de: "Blau", en: "Blue" } satisfies L, swatch: "oklch(0.58 0.2 260)" },
+  { id: "violet", label: { de: "Violett", en: "Violet" } satisfies L, swatch: "oklch(0.58 0.22 295)" },
+  { id: "green", label: { de: "Grün", en: "Green" } satisfies L, swatch: "oklch(0.62 0.17 155)" },
+  { id: "orange", label: { de: "Orange", en: "Orange" } satisfies L, swatch: "oklch(0.7 0.18 50)" },
+  { id: "rose", label: { de: "Rosa", en: "Pink" } satisfies L, swatch: "oklch(0.62 0.22 5)" },
 ] as const;
 
 export type AccentId = (typeof accents)[number]["id"];

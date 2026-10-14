@@ -27,6 +27,7 @@ import {
   type AboutStat,
   type JourneyStep,
 } from "@/lib/about";
+import { useLocale, useT, useUi } from "@/components/providers/locale-provider";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,8 @@ const rise = {
 };
 
 function Headline() {
+  const locale = useLocale();
+
   return (
     <motion.h2
       initial="hidden"
@@ -59,7 +62,7 @@ function Headline() {
       }}
       className="max-w-3xl text-3xl leading-tight font-semibold tracking-tight sm:text-4xl"
     >
-      {aboutHeadline.map((word, index) => (
+      {aboutHeadline[locale].map((word, index) => (
         <motion.span
           key={`${word.text}-${index}`}
           variants={{
@@ -122,6 +125,8 @@ function ScrollRevealText({ text }: { text: string }) {
 const COUNT_DURATION_MS = 1600;
 
 function Counter({ stat }: { stat: AboutStat }) {
+  const t = useT();
+  const locale = useLocale();
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" });
   const [value, setValue] = useState(0);
@@ -159,11 +164,13 @@ function Counter({ stat }: { stat: AboutStat }) {
   return (
     <div className="min-w-0">
       <p className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl">
-        <span ref={ref}>{value.toLocaleString("de-DE")}</span>
+        <span ref={ref}>
+          {value.toLocaleString(locale === "de" ? "de-DE" : "en-US")}
+        </span>
         {stat.suffix}
       </p>
       <p className="mt-1 text-xs wrap-break-word hyphens-auto text-muted-foreground sm:text-sm">
-        {stat.label}
+        {t(stat.label)}
       </p>
     </div>
   );
@@ -310,6 +317,7 @@ function JourneyNode({
 }
 
 function JourneyTimeline() {
+  const t = useT();
   const ref = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -340,7 +348,7 @@ function JourneyTimeline() {
 
       {journey.map((step, index) => (
         <motion.li
-          key={step.title}
+          key={step.title.de}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewport}
@@ -350,17 +358,17 @@ function JourneyTimeline() {
           <JourneyNode step={step} index={index} progress={progress} />
 
           <div className="flex-1 rounded-xl border border-border bg-card p-4 md:w-full md:flex-none">
-            <p className="text-xs font-medium text-primary">{step.period}</p>
-            <p className="mt-1 font-semibold">{step.title}</p>
-            <p className="text-sm text-muted-foreground">{step.place}</p>
-            <p className="mt-3 text-sm text-muted-foreground">{step.text}</p>
+            <p className="text-xs font-medium text-primary">{t(step.period)}</p>
+            <p className="mt-1 font-semibold">{t(step.title)}</p>
+            <p className="text-sm text-muted-foreground">{t(step.place)}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{t(step.text)}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5 md:justify-center">
               {step.highlights.map((highlight) => (
                 <li
-                  key={highlight}
+                  key={highlight.de}
                   className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs"
                 >
-                  {highlight}
+                  {t(highlight)}
                 </li>
               ))}
             </ul>
@@ -372,12 +380,17 @@ function JourneyTimeline() {
 }
 
 export function AboutSection() {
+  const t = useT();
+  const ui = useUi();
+
   return (
     <section
       id="about"
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
-      <span className="text-sm font-medium text-primary">Über mich</span>
+      <span className="text-sm font-medium text-primary">
+        {ui.about.eyebrow}
+      </span>
       <div className="mt-2">
         <Headline />
       </div>
@@ -399,14 +412,14 @@ export function AboutSection() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              {availability}
+              {t(availability)}
             </span>
 
             <div className="flex gap-2">
               <Button asChild size="icon" variant="outline">
                 <a
                   href={`mailto:${siteConfig.email}`}
-                  aria-label="E-Mail schreiben"
+                  aria-label={ui.about.writeEmail}
                 >
                   <Mail />
                 </a>
@@ -436,11 +449,11 @@ export function AboutSection() {
         </div>
 
         <div className="flex flex-col gap-8">
-          <ScrollRevealText text={aboutParagraph} />
+          <ScrollRevealText text={t(aboutParagraph)} />
 
           <div className="grid grid-cols-3 gap-3 border-y border-border/60 py-6 sm:gap-4">
             {aboutStats.map((stat) => (
-              <Counter key={stat.label} stat={stat} />
+              <Counter key={stat.label.de} stat={stat} />
             ))}
           </div>
 
@@ -452,16 +465,16 @@ export function AboutSection() {
             className="grid grid-cols-2 gap-3"
           >
             {aboutFacts.map((fact) => (
-              <motion.div key={fact.label} variants={rise}>
+              <motion.div key={fact.label.de} variants={rise}>
                 <SpotlightCard href={fact.href}>
                   <dt className="flex items-center gap-2 text-xs text-muted-foreground">
                     <fact.icon
                       className="h-4 w-4 text-primary"
                       aria-hidden="true"
                     />
-                    {fact.label}
+                    {t(fact.label)}
                   </dt>
-                  <dd className="mt-1 text-sm font-medium">{fact.value}</dd>
+                  <dd className="mt-1 text-sm font-medium">{t(fact.value)}</dd>
                 </SpotlightCard>
               </motion.div>
             ))}
@@ -470,7 +483,7 @@ export function AboutSection() {
       </div>
 
       <div className="mt-16">
-        <h3 className="text-lg font-semibold">Wie ich arbeite</h3>
+        <h3 className="text-lg font-semibold">{ui.about.howIWork}</h3>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -480,7 +493,7 @@ export function AboutSection() {
         >
           {aboutPrinciples.map((principle) => (
             <motion.div
-              key={principle.title}
+              key={principle.title.de}
               variants={rise}
               className="h-full"
             >
@@ -489,9 +502,9 @@ export function AboutSection() {
                   className="h-5 w-5 text-primary"
                   aria-hidden="true"
                 />
-                <p className="mt-3 font-medium">{principle.title}</p>
+                <p className="mt-3 font-medium">{t(principle.title)}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {principle.text}
+                  {t(principle.text)}
                 </p>
               </SpotlightCard>
             </motion.div>
@@ -500,16 +513,16 @@ export function AboutSection() {
       </div>
 
       <div className="mt-16">
-        <h3 className="text-lg font-semibold">Mein Weg</h3>
+        <h3 className="text-lg font-semibold">{ui.about.myPath}</h3>
         <JourneyTimeline />
       </div>
 
       <div className="mt-16">
-        <h3 className="text-lg font-semibold">Abseits vom Code</h3>
+        <h3 className="text-lg font-semibold">{ui.about.beyondCode}</h3>
         <ul className="mt-4 flex flex-wrap gap-3">
           {interests.map((interest) => (
             <motion.li
-              key={interest.label}
+              key={interest.label.de}
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
@@ -522,7 +535,7 @@ export function AboutSection() {
                   aria-hidden="true"
                 />
                 <span>
-                  {interest.label}
+                  {t(interest.label)}
                   <span className="ml-2 text-xs text-muted-foreground">
                     {interest.hint}
                   </span>

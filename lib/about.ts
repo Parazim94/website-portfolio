@@ -1,12 +1,12 @@
 import {
   BookOpen,
   Brain,
+  Briefcase,
   Code2,
   Eye,
   Footprints,
   Gamepad2,
   GraduationCap,
-  Briefcase,
   Headset,
   MapPin,
   Rocket,
@@ -15,14 +15,16 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import type { L, Locale } from "@/lib/i18n";
+
 export interface HeadlineWord {
   text: string;
   highlight?: boolean;
 }
 
 export interface AboutFact {
-  label: string;
-  value: string;
+  label: L;
+  value: L;
   href: string;
   icon: LucideIcon;
 }
@@ -30,75 +32,107 @@ export interface AboutFact {
 export interface AboutStat {
   value: number;
   suffix?: string;
-  label: string;
+  label: L;
 }
 
 export interface AboutPrinciple {
-  title: string;
-  text: string;
+  title: L;
+  text: L;
   icon: LucideIcon;
 }
 
 export interface JourneyStep {
-  period: string;
-  title: string;
-  place: string;
-  text: string;
-  highlights: string[];
+  period: L;
+  title: L;
+  place: L;
+  text: L;
+  highlights: L[];
   icon: LucideIcon;
 }
 
 export interface AboutInterest {
-  label: string;
+  label: L;
   hint: string;
   icon: LucideIcon;
 }
 
-export const aboutHeadline: HeadlineWord[] = [
-  { text: "Ich" },
-  { text: "baue" },
-  { text: "Web-" },
-  { text: "und" },
-  { text: "Mobile-Apps," },
-  { text: "die" },
-  { text: "funktionieren", highlight: true },
-  { text: "und" },
-  { text: "sich" },
-  { text: "gut", highlight: true },
-  { text: "anfühlen.", highlight: true },
-];
+const same = (text: string): L => ({ de: text, en: text });
 
-export const aboutParagraph =
-  "Full-Stack Webentwickler mit über 2 Jahren Erfahrung in Programmierung und Webentwicklung, plus einem 3-jährigen Hintergrund als IT-Anwendungsbetreuer und Computer-Support-Spezialist. Deshalb denke ich beim Bauen immer an die Menschen, die es später benutzen. Ich verbinde technisches Know-how mit kreativem Denken und löse Probleme praxisnah. Dabei arbeite ich viel mit KI-Agents, um schneller und sauberer zu liefern.";
+export const aboutHeadline: Record<Locale, HeadlineWord[]> = {
+  de: [
+    { text: "Ich" },
+    { text: "baue" },
+    { text: "Web-" },
+    { text: "und" },
+    { text: "Mobile-Apps," },
+    { text: "die" },
+    { text: "funktionieren", highlight: true },
+    { text: "und" },
+    { text: "sich" },
+    { text: "gut", highlight: true },
+    { text: "anfühlen.", highlight: true },
+  ],
+  en: [
+    { text: "I" },
+    { text: "build" },
+    { text: "web" },
+    { text: "and" },
+    { text: "mobile" },
+    { text: "apps" },
+    { text: "that" },
+    { text: "work", highlight: true },
+    { text: "and" },
+    { text: "feel", highlight: true },
+    { text: "good.", highlight: true },
+  ],
+};
+
+export const aboutParagraph: L = {
+  de: "Full-Stack Webentwickler mit über 2 Jahren Erfahrung in Programmierung und Webentwicklung, plus einem 3-jährigen Hintergrund als IT-Anwendungsbetreuer und Computer-Support-Spezialist. Deshalb denke ich beim Bauen immer an die Menschen, die es später benutzen. Ich verbinde technisches Know-how mit kreativem Denken und löse Probleme praxisnah. Dabei arbeite ich viel mit KI-Agents, um schneller und sauberer zu liefern.",
+  en: "Full-stack web developer with over 2 years of experience in programming and web development, plus a 3-year background as an IT application support specialist and computer support specialist. That's why I always think about the people who will use what I build. I combine technical know-how with creative thinking and solve problems in a practical way. I work a lot with AI agents to deliver faster and cleaner.",
+};
 
 export const aboutStats: AboutStat[] = [
-  { value: 2, suffix: "+", label: "Jahre Webentwicklung" },
-  { value: 3, label: "Jahre IT-Support" },
-  { value: 1800, label: "Unterrichts­einheiten Weiterbildung" },
+  {
+    value: 2,
+    suffix: "+",
+    label: { de: "Jahre Webentwicklung", en: "Years of web development" },
+  },
+  { value: 3, label: { de: "Jahre IT-Support", en: "Years of IT support" } },
+  {
+    value: 1800,
+    label: {
+      de: "Unterrichts­einheiten Weiterbildung",
+      en: "Teaching units of further training",
+    },
+  },
 ];
 
 export const aboutFacts: AboutFact[] = [
   {
-    label: "Rolle",
-    value: "Full-Stack Webentwickler",
+    label: { de: "Rolle", en: "Role" },
+    value: { de: "Full-Stack Webentwickler", en: "Full-Stack Web Developer" },
     href: "#projects",
     icon: UserRound,
   },
   {
-    label: "Erfahrung",
-    value: "2+ Jahre (+3 Jahre IT-Support)",
+    label: { de: "Erfahrung", en: "Experience" },
+    value: {
+      de: "2+ Jahre (+3 Jahre IT-Support)",
+      en: "2+ years (+3 years IT support)",
+    },
     href: "#education",
     icon: GraduationCap,
   },
   {
-    label: "Standort",
-    value: "Berlin, Deutschland",
+    label: { de: "Standort", en: "Location" },
+    value: { de: "Berlin, Deutschland", en: "Berlin, Germany" },
     href: "#contact",
     icon: MapPin,
   },
   {
-    label: "Fokus",
-    value: "React, Next.js, TypeScript",
+    label: { de: "Fokus", en: "Focus" },
+    value: same("React, Next.js, TypeScript"),
     href: "#skills",
     icon: Code2,
   },
@@ -106,61 +140,99 @@ export const aboutFacts: AboutFact[] = [
 
 export const aboutPrinciples: AboutPrinciple[] = [
   {
-    title: "Erst verstehen, dann bauen",
-    text: "Aus dem Support weiß ich: Gute Software beginnt mit der Frage, was Nutzer wirklich brauchen.",
+    title: { de: "Erst verstehen, dann bauen", en: "Understand first, then build" },
+    text: {
+      de: "Aus dem Support weiß ich: Gute Software beginnt mit der Frage, was Nutzer wirklich brauchen.",
+      en: "From support I know: good software starts with the question of what users really need.",
+    },
     icon: Search,
   },
   {
-    title: "Mit KI, aber mit Kontrolle",
-    text: "Agents nehmen mir Fleißarbeit ab. Architektur, Review und Verantwortung bleiben bei mir.",
+    title: { de: "Mit KI, aber mit Kontrolle", en: "With AI, but in control" },
+    text: {
+      de: "Agents nehmen mir Fleißarbeit ab. Architektur, Review und Verantwortung bleiben bei mir.",
+      en: "Agents take the grunt work off my plate. Architecture, review and responsibility stay with me.",
+    },
     icon: Brain,
   },
   {
-    title: "Auf Details achten",
-    text: "Ladezeiten, Barrierefreiheit und kleine Animationen entscheiden, ob sich etwas hochwertig anfühlt.",
+    title: { de: "Auf Details achten", en: "Sweat the details" },
+    text: {
+      de: "Ladezeiten, Barrierefreiheit und kleine Animationen entscheiden, ob sich etwas hochwertig anfühlt.",
+      en: "Load times, accessibility and small animations decide whether something feels high quality.",
+    },
     icon: Eye,
   },
 ];
 
 export const journey: JourneyStep[] = [
   {
-    period: "3 Jahre",
-    title: "IT-Support",
-    place: "Anwendungsbetreuer & Computer-Support",
-    text: "Täglich mit echten Problemen von Anwendern gearbeitet. Daher kommt mein Blick für die Nutzerseite.",
-    highlights: ["Anwenderbetreuung", "Fehleranalyse"],
+    period: { de: "3 Jahre", en: "3 years" },
+    title: { de: "IT-Support", en: "IT support" },
+    place: {
+      de: "Anwendungsbetreuer & Computer-Support",
+      en: "Application support & computer support",
+    },
+    text: {
+      de: "Täglich mit echten Problemen von Anwendern gearbeitet. Daher kommt mein Blick für die Nutzerseite.",
+      en: "Worked every day on real problems of users. That's where my eye for the user side comes from.",
+    },
+    highlights: [
+      { de: "Anwenderbetreuung", en: "User support" },
+      { de: "Fehleranalyse", en: "Troubleshooting" },
+    ],
     icon: Headset,
   },
   {
-    period: "03/2023 – 06/2023",
-    title: "Einstieg in die Entwicklung",
-    place: "Ironhack, Berlin",
-    text: "Intensiver Full-Stack-Kurs: Der Wechsel vom Support in die Webentwicklung.",
-    highlights: ["React", "Express", "MongoDB"],
+    period: same("03/2023 – 06/2023"),
+    title: { de: "Einstieg in die Entwicklung", en: "Getting into development" },
+    place: same("Ironhack, Berlin"),
+    text: {
+      de: "Intensiver Full-Stack-Kurs: Der Wechsel vom Support in die Webentwicklung.",
+      en: "Intensive full-stack course: the switch from support to web development.",
+    },
+    highlights: [same("React"), same("Express"), same("MongoDB")],
     icon: Rocket,
   },
   {
-    period: "04/2024 – 06/2025",
-    title: "Weiterbildung",
-    place: "Digital Career Institute, Berlin",
-    text: "Zertifizierte Weiterbildung, Praktikum bei ESS Energy & Sales Services und Abschlussprojekt Broke Chain im Team.",
-    highlights: ["1.800 UE", "Praktikum", "Broke Chain"],
+    period: same("04/2024 – 06/2025"),
+    title: { de: "Weiterbildung", en: "Further training" },
+    place: same("Digital Career Institute, Berlin"),
+    text: {
+      de: "Zertifizierte Weiterbildung, Praktikum bei ESS Energy & Sales Services und Abschlussprojekt Broke Chain im Team.",
+      en: "Certified further training, internship at ESS Energy & Sales Services and the final project Broke Chain in a team.",
+    },
+    highlights: [
+      { de: "1.800 UE", en: "1,800 units" },
+      { de: "Praktikum", en: "Internship" },
+      same("Broke Chain"),
+    ],
     icon: GraduationCap,
   },
   {
-    period: "2025 – 2026",
-    title: "Full-Stack Entwickler",
-    place: "Plan B Net Zero",
-    text: "Produktive Apps für Kunden und Vertrieb im Energiebereich, vom Datenbank-Schema bis zur Oberfläche.",
-    highlights: ["Neo App", "Sales App", "Tarifrechner"],
+    period: same("2025 – 2026"),
+    title: { de: "Full-Stack Entwickler", en: "Full-stack developer" },
+    place: same("Plan B Net Zero"),
+    text: {
+      de: "Produktive Apps für Kunden und Vertrieb im Energiebereich, vom Datenbank-Schema bis zur Oberfläche.",
+      en: "Production apps for customers and sales in the energy sector, from database schema to interface.",
+    },
+    highlights: [
+      same("Neo App"),
+      same("Sales App"),
+      { de: "Tarifrechner", en: "Tariff calculator" },
+    ],
     icon: Briefcase,
   },
 ];
 
 export const interests: AboutInterest[] = [
-  { label: "Laufen", hint: "Run Analytics", icon: Footprints },
-  { label: "Lesen", hint: "Karamasow-Begleiter", icon: BookOpen },
-  { label: "Spiele", hint: "Abgrund", icon: Gamepad2 },
+  { label: { de: "Laufen", en: "Running" }, hint: "Run Analytics", icon: Footprints },
+  { label: { de: "Lesen", en: "Reading" }, hint: "Karamasow-Begleiter", icon: BookOpen },
+  { label: { de: "Spiele", en: "Games" }, hint: "Abgrund", icon: Gamepad2 },
 ];
 
-export const availability = "Offen für Angebote";
+export const availability: L = {
+  de: "Offen für Angebote",
+  en: "Open to offers",
+};

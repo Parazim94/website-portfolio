@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ProjectCard } from "@/components/sections/project-card";
+import { useT, useUi } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
 import type { PortfolioProject } from "@/lib/all-projects";
 import { cn } from "@/lib/utils";
@@ -21,10 +22,13 @@ export function ProjectCarousel({
 }) {
   const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
+  const t = useT();
+  const ui = useUi();
   const count = projects.length;
   const half = Math.floor(count / 2);
 
-  const go = (step: number) => setActive((current) => (current + step + count) % count);
+  const go = (step: number) =>
+    setActive((current) => (current + step + count) % count);
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === "ArrowLeft") go(-1);
@@ -34,7 +38,7 @@ export function ProjectCarousel({
   return (
     <div
       role="group"
-      aria-roledescription="Karussell"
+      aria-roledescription={ui.projects.carousel}
       aria-label={label}
       onKeyDown={onKeyDown}
     >
@@ -66,7 +70,13 @@ export function ProjectCarousel({
                   z: -distance * 160,
                   rotateY: -offset * 32,
                   scale: isActive ? 1 : 0.92,
-                  opacity: !isVisible ? 0 : isActive ? 1 : distance === 1 ? 0.65 : 0.3,
+                  opacity: !isVisible
+                    ? 0
+                    : isActive
+                      ? 1
+                      : distance === 1
+                        ? 0.65
+                        : 0.3,
                 }}
                 transition={
                   reduceMotion
@@ -84,7 +94,7 @@ export function ProjectCarousel({
                 {!isActive && isVisible ? (
                   <button
                     type="button"
-                    aria-label={`${project.title} anzeigen`}
+                    aria-label={ui.projects.show(t(project.title))}
                     onClick={() => setActive(index)}
                     className="absolute inset-0 cursor-pointer rounded-xl"
                   />
@@ -100,7 +110,7 @@ export function ProjectCarousel({
           <Button
             variant="outline"
             size="icon"
-            aria-label="Vorheriges Projekt"
+            aria-label={ui.projects.previous}
             onClick={() => go(-1)}
           >
             <ChevronLeft />
@@ -111,7 +121,7 @@ export function ProjectCarousel({
               <button
                 key={project.slug}
                 type="button"
-                aria-label={`Zu ${project.title}`}
+                aria-label={ui.projects.goTo(t(project.title))}
                 aria-current={index === active}
                 onClick={() => setActive(index)}
                 className={cn(
@@ -127,7 +137,7 @@ export function ProjectCarousel({
           <Button
             variant="outline"
             size="icon"
-            aria-label="Nächstes Projekt"
+            aria-label={ui.projects.next}
             onClick={() => go(1)}
           >
             <ChevronRight />
