@@ -7,11 +7,10 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
-  ImageIcon,
   Lock,
+  Star,
 } from "lucide-react";
 
-import { SectionHeading } from "@/components/section-heading";
 import { GithubIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,20 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  personalProjects,
-  personalProjectsGroup,
-  workExperience,
-  workProjects,
-  type WorkProject,
-} from "@/lib/experience";
-
-const container = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
+import type { PortfolioProject } from "@/lib/all-projects";
 
 const item = {
   hidden: { opacity: 0, y: 16 },
@@ -116,27 +102,33 @@ function ProjectImageGallery({
   );
 }
 
-function ProjectCard({ project }: { project: WorkProject }) {
+export function ProjectCard({ project }: { project: PortfolioProject }) {
   return (
     <motion.div variants={item} className="h-full">
       <Card className="flex h-full flex-col overflow-hidden pt-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
-        <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
-          {project.images && project.images.length > 0 ? (
+        {project.images && project.images.length > 0 ? (
+          <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
             <ProjectImageGallery
               images={project.images}
               title={project.title}
               fit={project.imageFit}
             />
-          ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-              <ImageIcon className="h-6 w-6" aria-hidden="true" />
-              <span className="text-xs">Screenshot folgt</span>
-            </div>
-          )}
-        </div>
+          </div>
+        ) : null}
 
-        <CardHeader>
-          <CardTitle>{project.title}</CardTitle>
+        <CardHeader className={project.images?.length ? undefined : "pt-6"}>
+          <CardTitle className="flex items-center gap-2">
+            {project.title}
+            {project.featured ? (
+              <Badge variant="outline" className="gap-1 text-primary">
+                <Star className="h-3 w-3" aria-hidden="true" />
+                Highlight
+              </Badge>
+            ) : null}
+          </CardTitle>
+          {project.period ? (
+            <p className="text-xs text-muted-foreground">{project.period}</p>
+          ) : null}
           <CardDescription>{project.description}</CardDescription>
         </CardHeader>
 
@@ -177,67 +169,5 @@ function ProjectCard({ project }: { project: WorkProject }) {
         </CardFooter>
       </Card>
     </motion.div>
-  );
-}
-
-function ProjectGrid({ projects }: { projects: WorkProject[] }) {
-  return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={container}
-      className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-    >
-      {projects.map((project) => (
-        <ProjectCard key={project.slug} project={project} />
-      ))}
-    </motion.div>
-  );
-}
-
-export function PersonalProjectsSection() {
-  return (
-    <section
-      id="personal-projects"
-      className="scroll-mt-16 border-t border-border/40 py-24"
-    >
-      <SectionHeading
-        eyebrow={personalProjectsGroup.title}
-        title={personalProjectsGroup.title}
-        description={personalProjectsGroup.subtitle}
-      />
-
-      <ProjectGrid projects={personalProjects} />
-    </section>
-  );
-}
-
-export function ExperienceSection() {
-  return (
-    <section
-      id="experience"
-      className="scroll-mt-16 border-t border-border/40 py-24"
-    >
-      <SectionHeading
-        eyebrow="Berufserfahrung"
-        title="Berufserfahrung"
-        description="Ausgewählte Projekte aus meiner beruflichen Praxis."
-      />
-
-      <div className="mt-10 flex flex-col gap-1 border-b border-border/40 pb-6 sm:flex-row sm:items-baseline sm:justify-between">
-        <div>
-          <p className="text-lg font-semibold">{workExperience.company}</p>
-          <p className="text-sm text-muted-foreground">
-            {workExperience.role}
-          </p>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {workExperience.period}
-        </p>
-      </div>
-
-      <ProjectGrid projects={workProjects} />
-    </section>
   );
 }

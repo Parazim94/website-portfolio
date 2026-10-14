@@ -35,10 +35,8 @@ export const siteConfig = {
 export const navLinks: NavLink[] = [
   { label: "Start", href: "#hero" },
   { label: "Über mich", href: "#about" },
+  { label: "Projekte", href: "#projects" },
   { label: "Ausbildung", href: "#education" },
-  { label: "Eigene Projekte", href: "#personal-projects" },
-  { label: "Berufserfahrung", href: "#experience" },
-  { label: "Ausbildungsarbeiten", href: "#projects" },
   { label: "Skills", href: "#skills" },
   { label: "Kontakt", href: "#contact" },
 ];

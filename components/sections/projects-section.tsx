@@ -1,22 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
-import { GithubIcon } from "@/components/icons";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ProjectCard } from "@/components/sections/project-card";
 import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { projects } from "@/lib/projects";
+  allProjects,
+  projectFilters,
+  type ProjectCategory,
+} from "@/lib/all-projects";
+import { workExperience } from "@/lib/experience";
+import { cn } from "@/lib/utils";
 
 const container = {
   hidden: {},
@@ -25,77 +20,81 @@ const container = {
   },
 };
 
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-};
+type Filter = "all" | ProjectCategory;
 
 export function ProjectsSection() {
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const visible = allProjects
+    .filter((project) => filter === "all" || project.category === filter)
+    .sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
+
   return (
     <section
       id="projects"
       className="scroll-mt-16 border-t border-border/40 py-24"
     >
       <SectionHeading
-        eyebrow="Ausbildung & Weiterbildung"
-        title="Ausbildungs- und Weiterbildungsarbeiten"
-        description="Projekte aus meiner Ausbildung und Weiterbildung."
+        eyebrow="Projekte"
+        title="Was ich gebaut habe"
+        description="Eigene Projekte, Arbeiten aus meiner Berufserfahrung und Projekte aus Ausbildung und Weiterbildung."
       />
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={container}
-        className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      <div
+        role="group"
+        aria-label="Projekte filtern"
+        className="mt-8 flex flex-wrap gap-2"
       >
-        {projects.map((project) => (
-          <motion.div key={project.slug} variants={item} className="h-full">
-            <Card className="flex h-full flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-                <CardAction className="text-xs text-muted-foreground">
-                  {project.period}
-                </CardAction>
-                <CardDescription>{project.description}</CardDescription>
-              </CardHeader>
+        {projectFilters.map(({ id, label }) => {
+          const count =
+            id === "all"
+              ? allProjects.length
+              : allProjects.filter((project) => project.category === id).length;
+          const active = filter === id;
 
-              <CardContent className="flex flex-1 flex-wrap content-start gap-1.5">
-                {project.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </CardContent>
+          return (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setFilter(id)}
+              className={cn(
+                "rounded-full border px-4 py-1.5 text-sm transition-colors",
+                active
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {label}
+              <span className="ml-1.5 opacity-70">{count}</span>
+            </button>
+          );
+        })}
+      </div>
 
-              <CardFooter className="gap-2">
-                {project.liveUrl ? (
-                  <Button asChild size="sm" variant="outline">
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <ExternalLink />
-                      Live Demo
-                    </a>
-                  </Button>
-                ) : null}
-                {project.githubUrl ? (
-                  <Button asChild size="sm" variant="ghost">
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <GithubIcon className="h-4 w-4" />
-                      Code
-                    </a>
-                  </Button>
-                ) : null}
-              </CardFooter>
-            </Card>
-          </motion.div>
+      {filter === "work" ? (
+        <div className="mt-6 flex flex-col gap-1 border-b border-border/40 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
+          <div>
+            <p className="text-lg font-semibold">{workExperience.company}</p>
+            <p className="text-sm text-muted-foreground">
+              {workExperience.role}
+            </p>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {workExperience.period}
+          </p>
+        </div>
+      ) : null}
+
+      <motion.div
+        key={filter}
+        initial="hidden"
+        animate="visible"
+        variants={container}
+        className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {visible.map((project) => (
+          <ProjectCard key={project.slug} project={project} />
         ))}
       </motion.div>
     </section>
