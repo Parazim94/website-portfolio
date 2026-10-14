@@ -2,11 +2,13 @@
 
 import { Resend } from "resend";
 
+import { contactTopics, PHONE_PATTERN } from "@/lib/contact-topics";
 import { siteConfig } from "@/lib/site-config";
 
 export interface ContactFormState {
   status: "idle" | "success" | "error";
   message: string;
+  values?: Record<"name" | "email" | "phone" | "topic" | "message", string>;
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,21 +17,32 @@ export async function sendContactMessage(
   _prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
-  const name = formData.get("name");
-  const email = formData.get("email");
-  const message = formData.get("message");
+  const read = (key: string) => {
+    const value = formData.get(key);
+    return typeof value === "string" ? value.trim() : "";
+  };
+
+  const values = {
+    name: read("name"),
+    email: read("email"),
+    phone: read("phone"),
+    topic: read("topic"),
+    message: read("message"),
+  };
+  const topic = contactTopics.find(({ id }) => id === values.topic);
 
   if (
-    typeof name !== "string" ||
-    typeof email !== "string" ||
-    typeof message !== "string" ||
-    name.trim().length < 2 ||
-    !EMAIL_PATTERN.test(email) ||
-    message.trim().length < 10
+    values.name.length < 2 ||
+    !EMAIL_PATTERN.test(values.email) ||
+    (values.phone !== "" && !PHONE_PATTERN.test(values.phone)) ||
+    !topic ||
+    values.message.length < 10
   ) {
     return {
       status: "error",
-      message: "Bitte fülle alle Felder gültig aus (Nachricht mind. 10 Zeichen).",
+      message:
+        "Bitte prüfe deine Angaben: Name, gültige E-Mail, Thema und eine Nachricht mit mind. 10 Zeichen sind nötig. Die Telefonnummer ist optional, muss aber gültig sein.",
+      values,
     };
   }
 
@@ -44,14 +57,21 @@ export async function sendContactMessage(
   }
 
   const resend = new Resend(apiKey);
-  const emailBody = `Von: ${name} <${email}>\n\n${message}`;
+  const { name, email, phone, message } = values;
+  const emailBody = [
+    `Von: ${name} <${email}>`,
+    `Telefon: ${phone || "–"}`,
+    `Thema: ${topic.label}`,
+    "",
+    message,
+  ].join("\n");
 
   try {
     const { error } = await resend.emails.send({
       from: `Portfolio Kontaktformular <${siteConfig.contactFromAddress}>`,
       to: siteConfig.email,
       replyTo: email,
-      subject: `Neue Nachricht von ${name}`,
+      subject: `[${topic.label}] Neue Nachricht von ${name}`,
       text: emailBody,
     });
 
@@ -60,6 +80,7 @@ export async function sendContactMessage(
         status: "error",
         message:
           "Die Nachricht konnte nicht gesendet werden. Bitte versuch es später erneut.",
+        values,
       };
     }
   } catch {
@@ -67,6 +88,7 @@ export async function sendContactMessage(
       status: "error",
       message:
         "Die Nachricht konnte nicht gesendet werden. Bitte versuch es später erneut.",
+      values,
     };
   }
 

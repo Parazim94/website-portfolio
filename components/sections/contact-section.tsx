@@ -11,9 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { contactTopics, PHONE_PATTERN } from "@/lib/contact-topics";
 import { sendContactMessage, type ContactFormState } from "@/lib/actions/contact";
 
 const initialState: ContactFormState = { status: "idle", message: "" };
+const emptyValues = { name: "", email: "", phone: "", topic: "", message: "" };
+const MESSAGE_MAX = 2000;
+const PLACEHOLDER_STYLE = "placeholder:text-muted-foreground/50";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 16 },
@@ -35,6 +39,7 @@ function SubmitButton() {
 
 export function ContactSection() {
   const [state, formAction] = useActionState(sendContactMessage, initialState);
+  const values = state.values ?? emptyValues;
 
   return (
     <section
@@ -54,38 +59,90 @@ export function ContactSection() {
         viewport={{ once: true, margin: "-80px" }}
         variants={fadeInUp}
         transition={{ duration: 0.5 }}
-        className="mt-10 flex max-w-xl flex-col gap-5"
+        className="mt-10 flex max-w-2xl flex-col gap-5"
       >
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="contact-name">Name</Label>
-          <Input
-            id="contact-name"
-            name="name"
-            autoComplete="name"
-            minLength={2}
-            required
-          />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="contact-name">Name</Label>
+            <Input
+              id="contact-name"
+              name="name"
+              autoComplete="name"
+              placeholder="Max Mustermann"
+              defaultValue={values.name}
+              minLength={2}
+              required
+              className={PLACEHOLDER_STYLE}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="contact-email">E-Mail</Label>
+            <Input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="max@mustermann.de"
+              defaultValue={values.email}
+              required
+              className={PLACEHOLDER_STYLE}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label htmlFor="contact-email">E-Mail</Label>
+          <Label htmlFor="contact-phone">
+            Telefon{" "}
+            <span className="font-normal text-muted-foreground">(optional)</span>
+          </Label>
           <Input
-            id="contact-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
+            id="contact-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            placeholder="+49 170 1234567"
+            defaultValue={values.phone}
+            pattern={PHONE_PATTERN.source}
+            title="Telefonnummer, z. B. +49 170 1234567"
+            className={PLACEHOLDER_STYLE}
           />
         </div>
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-2 text-sm font-medium">Worum geht es?</legend>
+          <div className="flex flex-wrap gap-2">
+            {contactTopics.map((topic, index) => (
+              <label
+                key={topic.id}
+                className="cursor-pointer rounded-full border border-input bg-card px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground has-checked:border-primary has-checked:bg-primary has-checked:text-primary-foreground has-focus-visible:ring-3 has-focus-visible:ring-ring/50"
+              >
+                <input
+                  type="radio"
+                  name="topic"
+                  value={topic.id}
+                  defaultChecked={values.topic === topic.id}
+                  required={index === 0}
+                  className="sr-only"
+                />
+                {topic.label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-message">Nachricht</Label>
           <Textarea
             id="contact-message"
             name="message"
-            rows={5}
+            rows={6}
             minLength={10}
+            maxLength={MESSAGE_MAX}
+            placeholder="Hallo Denis, ich würde gern mit dir über … sprechen."
+            defaultValue={values.message}
             required
+            className={PLACEHOLDER_STYLE}
           />
         </div>
 
