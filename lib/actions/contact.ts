@@ -3,17 +3,20 @@
 import { headers } from "next/headers";
 import { Resend } from "resend";
 
-import { contactTopics, PHONE_PATTERN } from "@/lib/contact-topics";
+import {
+  contactTopics,
+  EXTRA_FIELD_MAX,
+  PHONE_PATTERN,
+  type ContactTopic,
+} from "@/lib/contact-topics";
 import { siteConfig } from "@/lib/site-config";
 
 export interface ContactFormState {
   status: "idle" | "success" | "error";
   message: string;
-  values?: Record<ContactField, string>;
-  errors?: Partial<Record<ContactField, string>>;
+  values?: Record<string, string>;
+  errors?: Record<string, string>;
 }
-
-export type ContactField = "name" | "email" | "phone" | "topic" | "message";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -63,16 +66,30 @@ export async function sendContactMessage(
     return typeof value === "string" ? value.trim() : "";
   };
 
-  const values = {
+  const values: Record<string, string> = {
     name: read("name"),
     email: read("email"),
     phone: read("phone"),
     topic: read("topic"),
     message: read("message"),
   };
-  const topic = contactTopics.find(({ id }) => id === values.topic);
+  const topic: ContactTopic | undefined = contactTopics.find(
+    ({ id }) => id === values.topic,
+  );
+  const extraFields = topic?.fields ?? [];
 
-  const errors: ContactFormState["errors"] = {};
+  for (const field of extraFields) {
+    values[field.name] = read(field.name);
+  }
+
+  const errors: Record<string, string> = {};
+
+  for (const field of extraFields) {
+    if (values[field.name].length > EXTRA_FIELD_MAX) {
+      errors[field.name] =
+        `${field.label} ist zu lang (maximal ${EXTRA_FIELD_MAX} Zeichen).`;
+    }
+  }
 
   if (values.name.length < 2) {
     errors.name = "Bitte gib deinen Namen an (mindestens 2 Zeichen).";
@@ -133,6 +150,9 @@ export async function sendContactMessage(
     `Von: ${name} <${email}>`,
     `Telefon: ${phone || "–"}`,
     `Thema: ${topic.label}`,
+    ...extraFields
+      .filter((field) => values[field.name])
+      .map((field) => `${field.label}: ${values[field.name]}`),
     "",
     message,
   ].join("\n");
@@ -190,5 +210,9 @@ export async function sendContactMessage(
     });
   } catch {}
 
-  return { status: "success", message: SUCCESS_MESSAGE };
+  return {
+    status: "success",
+    message: SUCCESS_MESSAGE,
+    values: { name },
+  };
 }

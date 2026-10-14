@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
@@ -11,14 +11,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { contactTopics } from "@/lib/contact-topics";
+import {
+  contactTopics,
+  EXTRA_FIELD_MAX,
+  RESPONSE_TIME,
+  type ContactTopic,
+} from "@/lib/contact-topics";
 import {
   sendContactMessage,
   type ContactFormState,
 } from "@/lib/actions/contact";
 
 const initialState: ContactFormState = { status: "idle", message: "" };
-const emptyValues = { name: "", email: "", phone: "", topic: "", message: "" };
+const emptyValues: Record<string, string> = {
+  name: "",
+  email: "",
+  phone: "",
+  topic: "",
+  message: "",
+};
 const MESSAGE_MAX = 2000;
 const PLACEHOLDER_STYLE = "placeholder:text-muted-foreground/50";
 
@@ -50,22 +61,71 @@ function SubmitButton() {
   );
 }
 
-export function ContactSection() {
+function ThankYou({ name, onReset }: { name?: string; onReset: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4 }}
+      role="status"
+      className="mt-10 flex max-w-2xl flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-12 text-center"
+    >
+      <svg
+        viewBox="0 0 52 52"
+        className="h-20 w-20 text-primary"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <motion.circle
+          cx="26"
+          cy="26"
+          r="23"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        />
+        <motion.path
+          d="M15 27l8 8 14-16"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
+        />
+      </svg>
+
+      <h3 className="text-2xl font-semibold tracking-tight">
+        {name ? `Danke, ${name.split(" ")[0]}!` : "Danke!"}
+      </h3>
+      <p className="max-w-md text-muted-foreground">
+        Deine Nachricht ist bei mir angekommen. Ich melde mich in der Regel{" "}
+        {RESPONSE_TIME} bei dir.
+      </p>
+
+      <Button variant="outline" onClick={onReset} className="mt-2">
+        Weitere Nachricht senden
+      </Button>
+    </motion.div>
+  );
+}
+
+function ContactForm({ onReset }: { onReset: () => void }) {
   const [state, formAction] = useActionState(sendContactMessage, initialState);
   const values = state.values ?? emptyValues;
   const errors = state.errors ?? {};
+  const [topicId, setTopicId] = useState(values.topic);
+  const selectedTopic: ContactTopic | undefined = contactTopics.find(
+    ({ id }) => id === topicId,
+  );
+
+  if (state.status === "success") {
+    return <ThankYou name={state.values?.name} onReset={onReset} />;
+  }
 
   return (
-    <section
-      id="contact"
-      className="scroll-mt-16 border-t border-border/40 py-24"
-    >
-      <SectionHeading
-        eyebrow="Kontakt"
-        title="Lass uns sprechen"
-        description="Du hast ein Projekt, eine Frage oder einfach Lust auf Austausch? Schreib mir."
-      />
-
+    <>
       <motion.form
         action={formAction}
         initial="hidden"
@@ -164,7 +224,8 @@ export function ContactSection() {
                   type="radio"
                   name="topic"
                   value={topic.id}
-                  defaultChecked={values.topic === topic.id}
+                  checked={topicId === topic.id}
+                  onChange={() => setTopicId(topic.id)}
                   required={index === 0}
                   className="sr-only"
                 />
@@ -174,6 +235,50 @@ export function ContactSection() {
           </div>
           <FieldError id="contact-topic-error" message={errors.topic} />
         </fieldset>
+
+        <AnimatePresence initial={false} mode="wait">
+          {selectedTopic?.fields ? (
+            <motion.div
+              key={selectedTopic.id}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="-m-1 overflow-hidden p-1"
+            >
+              <div className="grid gap-5 sm:grid-cols-2">
+                {selectedTopic.fields.map((field) => (
+                  <div key={field.name} className="flex flex-col gap-2">
+                    <Label htmlFor={`contact-${field.name}`}>
+                      {field.label}{" "}
+                      <span className="font-normal text-muted-foreground">
+                        (optional)
+                      </span>
+                    </Label>
+                    <Input
+                      id={`contact-${field.name}`}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      defaultValue={values[field.name] ?? ""}
+                      maxLength={EXTRA_FIELD_MAX}
+                      aria-invalid={!!errors[field.name]}
+                      aria-describedby={
+                        errors[field.name]
+                          ? `contact-${field.name}-error`
+                          : undefined
+                      }
+                      className={PLACEHOLDER_STYLE}
+                    />
+                    <FieldError
+                      id={`contact-${field.name}-error`}
+                      message={errors[field.name]}
+                    />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-message">Nachricht</Label>
@@ -195,17 +300,34 @@ export function ContactSection() {
           <FieldError id="contact-message-error" message={errors.message} />
         </div>
 
-        {state.status !== "idle" ? (
-          <Alert variant={state.status === "error" ? "destructive" : "default"}>
-            <AlertTitle>
-              {state.status === "error" ? "Fehler" : "Nachricht gesendet"}
-            </AlertTitle>
+        {state.status === "error" ? (
+          <Alert variant="destructive">
+            <AlertTitle>Fehler</AlertTitle>
             <AlertDescription>{state.message}</AlertDescription>
           </Alert>
         ) : null}
 
         <SubmitButton />
       </motion.form>
+    </>
+  );
+}
+
+export function ContactSection() {
+  const [formKey, setFormKey] = useState(0);
+
+  return (
+    <section
+      id="contact"
+      className="scroll-mt-16 border-t border-border/40 py-24"
+    >
+      <SectionHeading
+        eyebrow="Kontakt"
+        title="Lass uns sprechen"
+        description="Du hast ein Projekt, eine Frage oder einfach Lust auf Austausch? Schreib mir."
+      />
+
+      <ContactForm key={formKey} onReset={() => setFormKey((key) => key + 1)} />
     </section>
   );
 }
