@@ -9,8 +9,11 @@ import { siteConfig } from "@/lib/site-config";
 export interface ContactFormState {
   status: "idle" | "success" | "error";
   message: string;
-  values?: Record<"name" | "email" | "phone" | "topic" | "message", string>;
+  values?: Record<ContactField, string>;
+  errors?: Partial<Record<ContactField, string>>;
 }
+
+export type ContactField = "name" | "email" | "phone" | "topic" | "message";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,18 +72,33 @@ export async function sendContactMessage(
   };
   const topic = contactTopics.find(({ id }) => id === values.topic);
 
-  if (
-    values.name.length < 2 ||
-    !EMAIL_PATTERN.test(values.email) ||
-    (values.phone !== "" && !PHONE_PATTERN.test(values.phone)) ||
-    !topic ||
-    values.message.length < 10
-  ) {
+  const errors: ContactFormState["errors"] = {};
+
+  if (values.name.length < 2) {
+    errors.name = "Bitte gib deinen Namen an (mindestens 2 Zeichen).";
+  }
+  if (!EMAIL_PATTERN.test(values.email)) {
+    errors.email =
+      "Bitte gib eine gültige E-Mail-Adresse an, z. B. max@mustermann.de.";
+  }
+  if (values.phone !== "" && !PHONE_PATTERN.test(values.phone)) {
+    errors.phone =
+      "Die Telefonnummer ist ungültig. Erlaubt sind Ziffern, Leerzeichen und + ( ) / -, z. B. +49 170 1234567. Oder lass das Feld leer.";
+  }
+  if (!topic) {
+    errors.topic = "Bitte wähle aus, worum es geht.";
+  }
+  if (values.message.length < 10) {
+    errors.message = `Deine Nachricht ist zu kurz (${values.message.length} von mindestens 10 Zeichen).`;
+  }
+
+  if (!topic || Object.keys(errors).length > 0) {
     return {
       status: "error",
       message:
-        "Bitte prüfe deine Angaben: Name, gültige E-Mail, Thema und eine Nachricht mit mind. 10 Zeichen sind nötig. Die Telefonnummer ist optional, muss aber gültig sein.",
+        "Die Nachricht wurde nicht gesendet. Bitte korrigiere die markierten Felder.",
       values,
+      errors,
     };
   }
 

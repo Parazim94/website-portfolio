@@ -11,8 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { contactTopics, PHONE_PATTERN } from "@/lib/contact-topics";
-import { sendContactMessage, type ContactFormState } from "@/lib/actions/contact";
+import { contactTopics } from "@/lib/contact-topics";
+import {
+  sendContactMessage,
+  type ContactFormState,
+} from "@/lib/actions/contact";
 
 const initialState: ContactFormState = { status: "idle", message: "" };
 const emptyValues = { name: "", email: "", phone: "", topic: "", message: "" };
@@ -23,6 +26,16 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0 },
 };
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+
+  return (
+    <p id={id} role="alert" className="text-sm text-destructive">
+      {message}
+    </p>
+  );
+}
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -40,6 +53,7 @@ function SubmitButton() {
 export function ContactSection() {
   const [state, formAction] = useActionState(sendContactMessage, initialState);
   const values = state.values ?? emptyValues;
+  const errors = state.errors ?? {};
 
   return (
     <section
@@ -80,6 +94,8 @@ export function ContactSection() {
             <Label htmlFor="contact-name">Name</Label>
             <Input
               id="contact-name"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "contact-name-error" : undefined}
               name="name"
               autoComplete="name"
               placeholder="Max Mustermann"
@@ -88,12 +104,17 @@ export function ContactSection() {
               required
               className={PLACEHOLDER_STYLE}
             />
+            <FieldError id="contact-name-error" message={errors.name} />
           </div>
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="contact-email">E-Mail</Label>
             <Input
               id="contact-email"
+              aria-invalid={!!errors.email}
+              aria-describedby={
+                errors.email ? "contact-email-error" : undefined
+              }
               name="email"
               type="email"
               autoComplete="email"
@@ -102,28 +123,36 @@ export function ContactSection() {
               required
               className={PLACEHOLDER_STYLE}
             />
+            <FieldError id="contact-email-error" message={errors.email} />
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-phone">
             Telefon{" "}
-            <span className="font-normal text-muted-foreground">(optional)</span>
+            <span className="font-normal text-muted-foreground">
+              (optional)
+            </span>
           </Label>
           <Input
             id="contact-phone"
+            aria-invalid={!!errors.phone}
+            aria-describedby={errors.phone ? "contact-phone-error" : undefined}
             name="phone"
             type="tel"
             autoComplete="tel"
             placeholder="+49 170 1234567"
             defaultValue={values.phone}
-            pattern={PHONE_PATTERN.source}
-            title="Telefonnummer, z. B. +49 170 1234567"
             className={PLACEHOLDER_STYLE}
           />
+          <FieldError id="contact-phone-error" message={errors.phone} />
         </div>
 
-        <fieldset className="flex flex-col gap-2">
+        <fieldset
+          className="flex flex-col gap-2"
+          aria-invalid={!!errors.topic}
+          aria-describedby={errors.topic ? "contact-topic-error" : undefined}
+        >
           <legend className="mb-2 text-sm font-medium">Worum geht es?</legend>
           <div className="flex flex-wrap gap-2">
             {contactTopics.map((topic, index) => (
@@ -143,12 +172,17 @@ export function ContactSection() {
               </label>
             ))}
           </div>
+          <FieldError id="contact-topic-error" message={errors.topic} />
         </fieldset>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="contact-message">Nachricht</Label>
           <Textarea
             id="contact-message"
+            aria-invalid={!!errors.message}
+            aria-describedby={
+              errors.message ? "contact-message-error" : undefined
+            }
             name="message"
             rows={6}
             minLength={10}
@@ -158,6 +192,7 @@ export function ContactSection() {
             required
             className={PLACEHOLDER_STYLE}
           />
+          <FieldError id="contact-message-error" message={errors.message} />
         </div>
 
         {state.status !== "idle" ? (
