@@ -124,7 +124,7 @@ export async function sendContactMessage(
       from: `Portfolio Kontaktformular <${siteConfig.contactFromAddress}>`,
       to: siteConfig.email,
       replyTo: email,
-      subject: `[${topic.label}] Neue Nachricht von ${name}`,
+      subject: `[${topic.label}] Neue Nachricht von ${name.replace(/\s+/g, " ")}`,
       text: emailBody,
     });
 
@@ -144,6 +144,33 @@ export async function sendContactMessage(
       values,
     };
   }
+
+  // Bestätigung an den Absender: Ein Fehler hier soll den Erfolg nicht kippen.
+  try {
+    await resend.emails.send({
+      from: `${siteConfig.name} <${siteConfig.contactFromAddress}>`,
+      to: email,
+      replyTo: siteConfig.email,
+      subject: "Deine Nachricht ist angekommen",
+      text: [
+        `Hallo ${name.replace(/\s+/g, " ")},`,
+        "",
+        `danke für deine Nachricht zum Thema „${topic.label}“. Ich habe sie erhalten und melde mich so schnell wie möglich bei dir.`,
+        "",
+        "Zur Erinnerung, das hast du geschrieben:",
+        "",
+        message
+          .split("\n")
+          .map((line) => `> ${line}`)
+          .join("\n"),
+        "",
+        "Viele Grüße",
+        siteConfig.name,
+        "",
+        "Diese Nachricht wurde automatisch versendet. Du kannst direkt darauf antworten.",
+      ].join("\n"),
+    });
+  } catch {}
 
   return { status: "success", message: SUCCESS_MESSAGE };
 }
