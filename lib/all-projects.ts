@@ -16,7 +16,12 @@ export const projectFilters: { id: "all" | ProjectCategory; label: string }[] = 
   { id: "training", label: "Ausbildung" },
 ];
 
-const featuredSlugs = new Set(["abgrund", "plan-b-neo-app", "karamasow-begleiter"]);
+const featuredSlugs = new Set([
+  "hollow-unit",
+  "abgrund",
+  "plan-b-neo-app",
+  "karamasow-begleiter",
+]);
 
 const withCategory = (
   list: WorkProject[],

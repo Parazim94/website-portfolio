@@ -92,6 +92,26 @@ export const personalProjectsGroup = {
 
 export const personalProjects: WorkProject[] = [
   {
+    slug: "hollow-unit",
+    title: { de: "Hollow Unit", en: "Hollow Unit" },
+    description: {
+      de: "Atmosphärisches 3D-Action-Spiel im Browser mit Schwertkämpfen, drei Gegnertypen, Mini-Boss und Hacking-Minispiel. Alles ist im Code erzeugt: Modelle, Texturen, Shader und Musik, ganz ohne Assets.",
+      en: "Atmospheric 3D action game in the browser with sword combat, three enemy types, a mini-boss and a hacking mini-game. Everything is generated in code: models, textures, shaders and music, with no assets at all.",
+    },
+    tags: ["three.js", "TypeScript", "Vite", "GLSL", "Web Audio API"],
+    liveUrl: "https://hollow-unit.vercel.app",
+    githubUrl: "https://github.com/Parazim94/hollow-unit",
+    images: [
+      "menu",
+      "combat",
+      "walkers",
+      "boss",
+      "hacking",
+      "dialogue",
+      "gameover",
+    ].map((name) => `/images/projects/hollow-unit/${name}.jpg`),
+  },
+  {
     slug: "abgrund",
     title: { de: "Abgrund", en: "Abgrund" },
     description: {
