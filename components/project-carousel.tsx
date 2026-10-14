@@ -43,11 +43,11 @@ export function ProjectCarousel({
           if (info.offset.x < -SWIPE_THRESHOLD) go(1);
           else if (info.offset.x > SWIPE_THRESHOLD) go(-1);
         }}
-        className="relative mx-auto h-140 overflow-hidden py-4"
+        className="relative mx-auto overflow-hidden py-4"
         style={{ perspective: 1400, touchAction: "pan-y" }}
       >
         <div
-          className="relative mx-auto h-full w-[min(20rem,78vw)]"
+          className="mx-auto grid w-[min(20rem,78vw)]"
           style={{ transformStyle: "preserve-3d" }}
         >
           {projects.map((project, index) => {
@@ -59,7 +59,7 @@ export function ProjectCarousel({
             return (
               <motion.div
                 key={project.slug}
-                className="absolute inset-0"
+                className="relative col-start-1 row-start-1"
                 initial={false}
                 animate={{
                   x: `${offset * 72}%`,
