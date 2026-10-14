@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  Maximize2,
   Lock,
   Star,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { useT, useUi } from "@/components/providers/locale-provider";
 import type { PortfolioProject } from "@/lib/all-projects";
+import { cn } from "@/lib/utils";
 
 const item = {
   hidden: { opacity: 0, y: 16 },
@@ -74,7 +76,10 @@ function ProjectImageGallery({
         <>
           <button
             type="button"
-            onClick={showPrevious}
+            onClick={(event) => {
+              event.stopPropagation();
+              showPrevious();
+            }}
             aria-label={ui.projects.previousImage}
             className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/70 p-1 text-foreground transition-colors hover:bg-background"
           >
@@ -82,7 +87,10 @@ function ProjectImageGallery({
           </button>
           <button
             type="button"
-            onClick={showNext}
+            onClick={(event) => {
+              event.stopPropagation();
+              showNext();
+            }}
             aria-label={ui.projects.nextImage}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/70 p-1 text-foreground transition-colors hover:bg-background"
           >
@@ -94,7 +102,10 @@ function ProjectImageGallery({
               <button
                 key={image}
                 type="button"
-                onClick={() => setActiveIndex(index)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveIndex(index);
+                }}
                 aria-label={ui.projects.goToImage(index + 1)}
                 className={`h-1.5 w-1.5 rounded-full transition-colors ${
                   index === activeIndex ? "bg-primary" : "bg-background/70"
@@ -108,7 +119,13 @@ function ProjectImageGallery({
   );
 }
 
-export function ProjectCard({ project }: { project: PortfolioProject }) {
+export function ProjectCard({
+  project,
+  onOpen,
+}: {
+  project: PortfolioProject;
+  onOpen?: (slug: string) => void;
+}) {
   const t = useT();
   const ui = useUi();
 
@@ -116,7 +133,13 @@ export function ProjectCard({ project }: { project: PortfolioProject }) {
     <motion.div variants={item} className="h-full">
       <Card className="flex h-full flex-col overflow-hidden pt-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
         {project.images && project.images.length > 0 ? (
-          <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
+          <div
+            onClick={onOpen ? () => onOpen(project.slug) : undefined}
+            className={cn(
+              "relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted",
+              onOpen && "cursor-zoom-in",
+            )}
+          >
             <ProjectImageGallery
               images={project.images}
               title={t(project.title)}
@@ -175,6 +198,17 @@ export function ProjectCard({ project }: { project: PortfolioProject }) {
               {project.note ? t(project.note) : ui.projects.confidential}
             </span>
           )}
+          {onOpen ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="ml-auto"
+              onClick={() => onOpen(project.slug)}
+            >
+              <Maximize2 />
+              {ui.projects.details}
+            </Button>
+          ) : null}
         </CardFooter>
       </Card>
     </motion.div>

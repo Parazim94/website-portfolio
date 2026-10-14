@@ -48,6 +48,21 @@ const de = {
     nextImage: "Nächstes Bild",
     goToImage: (n: number) => `Zu Bild ${n}`,
     screenshot: (title: string, n: number) => `${title} – Screenshot ${n}`,
+    details: "Details",
+    modal: {
+      label: (title: string) => `Projektdetails: ${title}`,
+      close: "Schließen",
+      previous: "Vorheriges Projekt",
+      next: "Nächstes Projekt",
+      position: (i: number, n: number) => `${i} von ${n}`,
+      image: (n: number) => `Bild ${n} anzeigen`,
+      problem: "Problem",
+      decision: "Entscheidung",
+      result: "Ergebnis",
+      askAbout: "Dazu schreiben",
+      askMessage: (title: string) =>
+        `Hallo Denis, ich habe eine Frage zu „${title}“: `,
+    },
   },
   education: {
     eyebrow: "Ausbildung",
@@ -120,7 +135,8 @@ const de = {
       sendFailed:
         "Die Nachricht konnte nicht gesendet werden. Bitte versuch es später erneut.",
     },
-    success: "Danke für deine Nachricht! Ich melde mich so schnell wie möglich.",
+    success:
+      "Danke für deine Nachricht! Ich melde mich so schnell wie möglich.",
     confirmation: {
       subject: "Deine Nachricht ist angekommen",
       greeting: (name: string) => `Hallo ${name},`,
@@ -184,6 +200,20 @@ const en: Ui = {
     nextImage: "Next image",
     goToImage: (n) => `Go to image ${n}`,
     screenshot: (title, n) => `${title} – screenshot ${n}`,
+    details: "Details",
+    modal: {
+      label: (title) => `Project details: ${title}`,
+      close: "Close",
+      previous: "Previous project",
+      next: "Next project",
+      position: (i, n) => `${i} of ${n}`,
+      image: (n) => `Show image ${n}`,
+      problem: "Problem",
+      decision: "Decision",
+      result: "Result",
+      askAbout: "Ask about this",
+      askMessage: (title) => `Hi Denis, I have a question about "${title}": `,
+    },
   },
   education: {
     eyebrow: "Education",
@@ -232,8 +262,7 @@ const en: Ui = {
     error: "Error",
     honeypot: "Website (please leave empty)",
     thanks: (name) => (name ? `Thanks, ${name}!` : "Thanks!"),
-    thanksText: (time) =>
-      `Your message has arrived. I usually reply ${time}.`,
+    thanksText: (time) => `Your message has arrived. I usually reply ${time}.`,
     another: "Send another message",
     responseTime: "within 1–2 business days",
     errors: {
@@ -244,15 +273,18 @@ const en: Ui = {
       topic: "Please choose what it is about.",
       messageShort: (length) =>
         `Your message is too short (${length} of at least 10 characters).`,
-      fieldLong: (label, max) => `${label} is too long (maximum ${max} characters).`,
-      invalid: "The message was not sent. Please correct the highlighted fields.",
+      fieldLong: (label, max) =>
+        `${label} is too long (maximum ${max} characters).`,
+      invalid:
+        "The message was not sent. Please correct the highlighted fields.",
       rateLimit:
         "You have just sent several messages. Please wait a few minutes or email me directly.",
       notConfigured:
         "Email sending is currently not configured. Please contact me directly by email.",
       sendFailed: "The message could not be sent. Please try again later.",
     },
-    success: "Thanks for your message! I'll get back to you as soon as possible.",
+    success:
+      "Thanks for your message! I'll get back to you as soon as possible.",
     confirmation: {
       subject: "Your message has arrived",
       greeting: (name) => `Hi ${name},`,

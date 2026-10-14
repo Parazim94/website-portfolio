@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useSyncExternalStore } from "react";
+import { ProjectModal } from "@/components/project-modal";
 import { SectionHeading } from "@/components/section-heading";
 import { ProjectCarousel } from "@/components/project-carousel";
 import { allProjects, type ProjectCategory } from "@/lib/all-projects";
@@ -38,9 +40,49 @@ const groups: {
   },
 ];
 
+const HASH_PREFIX = "#project-";
+
+function subscribeHash(listener: () => void) {
+  window.addEventListener("hashchange", listener);
+  return () => window.removeEventListener("hashchange", listener);
+}
+
+const getHash = () => window.location.hash;
+const getServerHash = () => "";
+
+// Setzt die Adresse ohne neuen Verlaufseintrag und meldet die Änderung.
+function replaceHash(hash: string) {
+  const base = window.location.pathname + window.location.search;
+  window.history.replaceState(null, "", hash ? `${base}${hash}` : base);
+  window.dispatchEvent(new Event("hashchange"));
+}
+
 export function ProjectsSection() {
   const t = useT();
   const ui = useUi();
+  const hash = useSyncExternalStore(subscribeHash, getHash, getServerHash);
+  const openSlug = hash.startsWith(HASH_PREFIX)
+    ? hash.slice(HASH_PREFIX.length)
+    : null;
+  const openedByClick = useRef(false);
+
+  const detailProjects = allProjects
+    .filter((project) => project.category === "personal" && project.story)
+    .sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
+
+  const openProject = (slug: string) => {
+    openedByClick.current = true;
+    window.location.hash = `project-${slug}`;
+  };
+
+  const closeProject = () => {
+    if (openedByClick.current) {
+      openedByClick.current = false;
+      window.history.back();
+    } else {
+      replaceHash("");
+    }
+  };
 
   return (
     <section
@@ -67,11 +109,22 @@ export function ProjectsSection() {
                   {t(group.subtitle)}
                 </p>
               </div>
-              <ProjectCarousel projects={projects} label={t(group.title)} />
+              <ProjectCarousel
+                projects={projects}
+                label={t(group.title)}
+                onOpen={openProject}
+              />
             </div>
           );
         })}
       </div>
+
+      <ProjectModal
+        projects={detailProjects}
+        openSlug={openSlug}
+        onNavigate={(slug) => replaceHash(`${HASH_PREFIX}${slug}`)}
+        onClose={closeProject}
+      />
     </section>
   );
 }

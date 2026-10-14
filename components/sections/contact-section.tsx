@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -17,6 +17,10 @@ import {
   EXTRA_FIELD_MAX,
   type ContactTopic,
 } from "@/lib/contact-topics";
+import {
+  CONTACT_PREFILL_EVENT,
+  type ContactPrefill,
+} from "@/lib/contact-prefill";
 import {
   sendContactMessage,
   type ContactFormState,
@@ -113,12 +117,18 @@ function ThankYou({ name, onReset }: { name?: string; onReset: () => void }) {
   );
 }
 
-function ContactForm({ onReset }: { onReset: () => void }) {
+function ContactForm({
+  onReset,
+  initial,
+}: {
+  onReset: () => void;
+  initial?: ContactPrefill;
+}) {
   const locale = useLocale();
   const t = useT();
   const ui = useUi();
   const [state, formAction] = useActionState(sendContactMessage, initialState);
-  const values = state.values ?? emptyValues;
+  const values = state.values ?? { ...emptyValues, ...initial };
   const errors = state.errors ?? {};
   const [topicId, setTopicId] = useState(values.topic);
   const selectedTopic: ContactTopic | undefined = contactTopics.find(
@@ -325,6 +335,17 @@ function ContactForm({ onReset }: { onReset: () => void }) {
 export function ContactSection() {
   const ui = useUi();
   const [formKey, setFormKey] = useState(0);
+  const [prefill, setPrefill] = useState<ContactPrefill | undefined>();
+
+  useEffect(() => {
+    const onPrefill = (event: Event) => {
+      setPrefill((event as CustomEvent<ContactPrefill>).detail);
+      setFormKey((key) => key + 1);
+    };
+
+    window.addEventListener(CONTACT_PREFILL_EVENT, onPrefill);
+    return () => window.removeEventListener(CONTACT_PREFILL_EVENT, onPrefill);
+  }, []);
 
   return (
     <section
@@ -337,7 +358,14 @@ export function ContactSection() {
         description={ui.contact.description}
       />
 
-      <ContactForm key={formKey} onReset={() => setFormKey((key) => key + 1)} />
+      <ContactForm
+        key={formKey}
+        initial={prefill}
+        onReset={() => {
+          setPrefill(undefined);
+          setFormKey((key) => key + 1);
+        }}
+      />
     </section>
   );
 }

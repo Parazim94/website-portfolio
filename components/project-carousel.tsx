@@ -16,9 +16,11 @@ const MAX_VISIBLE_OFFSET = 2;
 export function ProjectCarousel({
   projects,
   label,
+  onOpen,
 }: {
   projects: PortfolioProject[];
   label: string;
+  onOpen?: (slug: string) => void;
 }) {
   const [active, setActive] = useState(0);
   const reduceMotion = useReducedMotion();
@@ -89,7 +91,10 @@ export function ProjectCarousel({
                 }}
               >
                 <div inert={!isActive} className="h-full">
-                  <ProjectCard project={project} />
+                  <ProjectCard
+                    project={project}
+                    onOpen={project.story ? onOpen : undefined}
+                  />
                 </div>
                 {!isActive && isVisible ? (
                   <button
