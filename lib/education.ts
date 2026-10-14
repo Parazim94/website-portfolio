@@ -9,6 +9,7 @@ export interface Education {
   finalProject?: string;
   languageLevel?: string;
   certificateUrl?: string;
+  certificatePreview?: string;
 }
 
 export const education: Education[] = [
@@ -31,6 +32,7 @@ export const education: Education[] = [
     finalProject: "Broke Chain (Gruppenarbeit)",
     languageLevel: "Englisch C2",
     certificateUrl: "/certificates/dci-zertifikat.pdf",
+    certificatePreview: "/certificates/previews/dci.jpg",
   },
   {
     slug: "ironhack",
@@ -42,5 +44,20 @@ export const education: Education[] = [
       "Intensiver Full-Stack JavaScript Web Development Kurs (inkl. Pre-Work und Career Development).",
     focusAreas: ["HTML5", "CSS3", "ReactJS", "ExpressJS", "MongoDB"],
     certificateUrl: "/certificates/ironhack-zertifikat.pdf",
+    certificatePreview: "/certificates/previews/ironhack.jpg",
   },
 ];
+
+// Schwerpunkt aus der Ausbildung -> Skill-Name in lib/skills.ts
+export const focusSkillLinks: Record<string, string> = {
+  "HTML/CSS": "HTML",
+  HTML5: "HTML",
+  CSS3: "CSS",
+  JavaScript: "JavaScript (ES6)",
+  React: "React",
+  ReactJS: "React",
+  "Node.js/Express": "Node.js",
+  ExpressJS: "Express.js",
+  MongoDB: "MongoDB",
+  "REST APIs": "REST-API",
+};

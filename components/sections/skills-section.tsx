@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { SectionHeading } from "@/components/section-heading";
+import { SKILL_FOCUS_EVENT } from "@/lib/skill-focus";
 import { allProjects } from "@/lib/all-projects";
 import { projectsForSkill } from "@/lib/skill-projects";
 import { skillGroups, type SkillGroup } from "@/lib/skills";
@@ -130,8 +131,14 @@ interface Line {
   d: string;
 }
 
-function SkillNetwork({ group }: { group: SkillGroup }) {
-  const [selected, setSelected] = useState<string | null>(null);
+function SkillNetwork({
+  group,
+  initialSelected,
+}: {
+  group: SkillGroup;
+  initialSelected: string | null;
+}) {
+  const [selected, setSelected] = useState<string | null>(initialSelected);
   const [hovered, setHovered] = useState<string | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -294,8 +301,25 @@ function SkillNetwork({ group }: { group: SkillGroup }) {
 
 export function SkillsSection() {
   const [activeId, setActiveId] = useState(skillGroups[0].id);
+  const [pendingSkill, setPendingSkill] = useState<string | null>(null);
+  const [focusNonce, setFocusNonce] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const active = skillGroups.find((group) => group.id === activeId)!;
+
+  useEffect(() => {
+    const onFocusSkill = (event: Event) => {
+      const skill = (event as CustomEvent<string>).detail;
+      const group = skillGroups.find((entry) => entry.skills.includes(skill));
+      if (!group) return;
+
+      setActiveId(group.id);
+      setPendingSkill(skill);
+      setFocusNonce((nonce) => nonce + 1);
+    };
+
+    window.addEventListener(SKILL_FOCUS_EVENT, onFocusSkill);
+    return () => window.removeEventListener(SKILL_FOCUS_EVENT, onFocusSkill);
+  }, []);
 
   const onMouseMove = (event: MouseEvent<HTMLDivElement>) => {
     const panel = panelRef.current;
@@ -337,7 +361,10 @@ export function SkillsSection() {
               type="button"
               aria-selected={isActive}
               aria-controls="skills-panel"
-              onClick={() => setActiveId(group.id)}
+              onClick={() => {
+                setActiveId(group.id);
+                setPendingSkill(null);
+              }}
               className={cn(
                 "relative flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                 isActive
@@ -394,7 +421,15 @@ export function SkillsSection() {
 
             {active.id === "ai" ? <TypingTerminal /> : null}
 
-            <SkillNetwork key={active.id} group={active} />
+            <SkillNetwork
+              key={`${active.id}-${focusNonce}`}
+              group={active}
+              initialSelected={
+                pendingSkill && active.skills.includes(pendingSkill)
+                  ? pendingSkill
+                  : null
+              }
+            />
 
             {active.details ? (
               <motion.div
