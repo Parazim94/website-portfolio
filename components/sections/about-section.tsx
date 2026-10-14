@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import Image from "next/image";
 import {
-  animate,
   motion,
   useInView,
   useMotionValue,
@@ -120,24 +119,41 @@ function ScrollRevealText({ text }: { text: string }) {
   );
 }
 
+const COUNT_DURATION_MS = 1600;
+
 function Counter({ stat }: { stat: AboutStat }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" });
   const [value, setValue] = useState(0);
+
+  // Sicherheitsnetz: Falls die Animation nie startet oder hängen bleibt,
+  // steht nach kurzer Zeit trotzdem der echte Wert da.
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setValue(stat.value),
+      COUNT_DURATION_MS + 4000,
+    );
+    return () => clearTimeout(timer);
+  }, [stat.value]);
 
   useEffect(() => {
     if (!inView) return;
+
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const start = Date.now() - (reduceMotion ? COUNT_DURATION_MS : 0);
 
-    const controls = animate(0, stat.value, {
-      duration: reduceMotion ? 0 : 1.6,
-      ease: "easeOut",
-      onUpdate: (latest) => setValue(Math.round(latest)),
-    });
+    const tick = () => {
+      const progress = Math.min((Date.now() - start) / COUNT_DURATION_MS, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      setValue(Math.round(stat.value * eased));
+      if (progress >= 1) clearInterval(timer);
+    };
 
-    return () => controls.stop();
+    const timer = setInterval(tick, reduceMotion ? 0 : 32);
+
+    return () => clearInterval(timer);
   }, [inView, stat.value]);
 
   return (
