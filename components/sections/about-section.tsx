@@ -127,9 +127,12 @@ function Counter({ stat }: { stat: AboutStat }) {
 
   useEffect(() => {
     if (!inView) return;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     const controls = animate(0, stat.value, {
-      duration: 1.6,
+      duration: reduceMotion ? 0 : 1.6,
       ease: "easeOut",
       onUpdate: (latest) => setValue(Math.round(latest)),
     });
@@ -138,12 +141,14 @@ function Counter({ stat }: { stat: AboutStat }) {
   }, [inView, stat.value]);
 
   return (
-    <div>
-      <p className="text-3xl font-semibold tracking-tight text-primary">
+    <div className="min-w-0">
+      <p className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl">
         <span ref={ref}>{value.toLocaleString("de-DE")}</span>
         {stat.suffix}
       </p>
-      <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
+      <p className="mt-1 text-xs wrap-break-word hyphens-auto text-muted-foreground sm:text-sm">
+        {stat.label}
+      </p>
     </div>
   );
 }
@@ -417,7 +422,7 @@ export function AboutSection() {
         <div className="flex flex-col gap-8">
           <ScrollRevealText text={aboutParagraph} />
 
-          <div className="grid grid-cols-3 gap-4 border-y border-border/60 py-6">
+          <div className="grid grid-cols-3 gap-3 border-y border-border/60 py-6 sm:gap-4">
             {aboutStats.map((stat) => (
               <Counter key={stat.label} stat={stat} />
             ))}

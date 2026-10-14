@@ -251,7 +251,10 @@ export function EducationSection() {
         description="Mein Weg in die Webentwicklung, Station für Station."
       />
 
-      <ol ref={trackRef} className="relative mt-12 flex flex-col gap-12">
+      <ol
+        ref={trackRef}
+        className="relative mt-12 flex flex-col gap-12 overflow-x-clip"
+      >
         <div
           aria-hidden="true"
           className="absolute top-0 bottom-0 left-4 w-px -translate-x-1/2 bg-border md:left-1/2"

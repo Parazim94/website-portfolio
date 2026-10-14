@@ -69,12 +69,12 @@ export const aboutHeadline: HeadlineWord[] = [
 ];
 
 export const aboutParagraph =
-  "Ich bin Full-Stack-Webentwickler in Berlin. Bevor ich Entwickler wurde, habe ich drei Jahre als IT-Anwendungsbetreuer und im Computer-Support gearbeitet. Deshalb denke ich beim Bauen immer an die Menschen, die es später benutzen. Ich verbinde technisches Know-how mit kreativem Denken und löse Probleme praxisnah. Dabei arbeite ich viel mit KI-Agents, um schneller und sauberer zu liefern.";
+  "Full-Stack Webentwickler mit über 2 Jahren Erfahrung in Programmierung und Webentwicklung, plus einem 3-jährigen Hintergrund als IT-Anwendungsbetreuer und Computer-Support-Spezialist. Deshalb denke ich beim Bauen immer an die Menschen, die es später benutzen. Ich verbinde technisches Know-how mit kreativem Denken und löse Probleme praxisnah. Dabei arbeite ich viel mit KI-Agents, um schneller und sauberer zu liefern.";
 
 export const aboutStats: AboutStat[] = [
   { value: 2, suffix: "+", label: "Jahre Webentwicklung" },
   { value: 3, label: "Jahre IT-Support" },
-  { value: 1800, label: "Unterrichtseinheiten Weiterbildung" },
+  { value: 1800, label: "Unterrichts­einheiten Weiterbildung" },
 ];
 
 export const aboutFacts: AboutFact[] = [
