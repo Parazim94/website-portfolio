@@ -8,7 +8,7 @@ export const siteConfig = {
   role: "Full-Stack Webentwickler",
   location: "Berlin, Deutschland",
   tagline:
-    "Ich entwickle moderne, skalierbare Weblösungen, die technisch und visuell überzeugen.",
+    "Full-Stack Entwickler mit Support-Hintergrund. Ich baue Produkte, die man gern benutzt.",
   email: "d-roeder@hotmail.de",
   contactFromAddress: "kontakt@denis-roeder.com",
   github: "https://github.com/Parazim94",
