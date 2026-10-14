@@ -61,6 +61,20 @@ export function ContactSection() {
         transition={{ duration: 0.5 }}
         className="mt-10 flex max-w-2xl flex-col gap-5"
       >
+        <div
+          aria-hidden="true"
+          className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+        >
+          <label htmlFor="contact-website">Website (bitte leer lassen)</label>
+          <input
+            id="contact-website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="contact-name">Name</Label>

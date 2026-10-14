@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { Resend } from "resend";
 
 import { contactTopics, PHONE_PATTERN } from "@/lib/contact-topics";
@@ -13,10 +14,47 @@ export interface ContactFormState {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const SUCCESS_MESSAGE =
+  "Danke für deine Nachricht! Ich melde mich so schnell wie möglich.";
+
+// Pro Server-Instanz im Speicher: bremst Missbrauch, ersetzt aber kein verteiltes Limit.
+const submissions = new Map<string, number[]>();
+
+function isRateLimited(key: string) {
+  const now = Date.now();
+  const recent = (submissions.get(key) ?? []).filter(
+    (time) => now - time < RATE_LIMIT_WINDOW_MS,
+  );
+
+  if (recent.length >= RATE_LIMIT_MAX) {
+    submissions.set(key, recent);
+    return true;
+  }
+
+  submissions.set(key, [...recent, now]);
+
+  if (submissions.size > 1000) {
+    for (const [entry, times] of submissions) {
+      if (times.every((time) => now - time >= RATE_LIMIT_WINDOW_MS)) {
+        submissions.delete(entry);
+      }
+    }
+  }
+
+  return false;
+}
+
 export async function sendContactMessage(
   _prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  // Honeypot: Menschen sehen das Feld nicht, Bots füllen es aus.
+  if (formData.get("website")) {
+    return { status: "success", message: SUCCESS_MESSAGE };
+  }
+
   const read = (key: string) => {
     const value = formData.get(key);
     return typeof value === "string" ? value.trim() : "";
@@ -42,6 +80,21 @@ export async function sendContactMessage(
       status: "error",
       message:
         "Bitte prüfe deine Angaben: Name, gültige E-Mail, Thema und eine Nachricht mit mind. 10 Zeichen sind nötig. Die Telefonnummer ist optional, muss aber gültig sein.",
+      values,
+    };
+  }
+
+  const requestHeaders = await headers();
+  const clientIp =
+    requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    requestHeaders.get("x-real-ip") ||
+    "unknown";
+
+  if (isRateLimited(clientIp)) {
+    return {
+      status: "error",
+      message:
+        "Du hast gerade mehrere Nachrichten gesendet. Bitte warte ein paar Minuten oder schreib mir direkt per E-Mail.",
       values,
     };
   }
@@ -92,8 +145,5 @@ export async function sendContactMessage(
     };
   }
 
-  return {
-    status: "success",
-    message: "Danke für deine Nachricht! Ich melde mich so schnell wie möglich.",
-  };
+  return { status: "success", message: SUCCESS_MESSAGE };
 }
