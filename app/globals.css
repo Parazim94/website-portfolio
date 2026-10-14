@@ -121,6 +121,77 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Akzentfarben (unabhängig von Hell/Dunkel) */
+[data-accent="blue"] { --hue: 260; }
+[data-accent="violet"] { --hue: 295; }
+[data-accent="green"] { --hue: 155; }
+[data-accent="orange"] { --hue: 50; }
+[data-accent="rose"] { --hue: 5; }
+
+[data-accent]:not([data-accent="default"]) {
+  --primary: oklch(0.55 0.2 var(--hue));
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.65 0.15 var(--hue));
+  --sidebar-primary: var(--primary);
+  --hero-glow: oklch(0.6 0.2 var(--hue) / 18%);
+  --dot-color: oklch(0.55 0.2 var(--hue) / 14%);
+
+  --background: oklch(0.965 0.025 var(--hue));
+  --foreground: oklch(0.2 0.05 var(--hue));
+  --card: oklch(0.99 0.012 var(--hue));
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.99 0.012 var(--hue));
+  --popover-foreground: var(--foreground);
+  --secondary: oklch(0.92 0.045 var(--hue));
+  --secondary-foreground: oklch(0.28 0.08 var(--hue));
+  --muted: oklch(0.93 0.035 var(--hue));
+  --muted-foreground: oklch(0.45 0.07 var(--hue));
+  --accent: oklch(0.9 0.06 var(--hue));
+  --accent-foreground: oklch(0.25 0.09 var(--hue));
+  --border: oklch(0.85 0.06 var(--hue));
+  --input: oklch(0.85 0.06 var(--hue));
+  --glow-a: oklch(0.85 0.12 var(--hue) / 55%);
+  --glow-b: oklch(0.88 0.1 calc(var(--hue) + 50) / 45%);
+  accent-color: var(--primary);
+}
+
+.dark[data-accent]:not([data-accent="default"]) {
+  --primary: oklch(0.74 0.17 var(--hue));
+  --primary-foreground: oklch(0.15 0.03 var(--hue));
+  --ring: oklch(0.6 0.15 var(--hue));
+  --hero-glow: oklch(0.7 0.17 var(--hue) / 22%);
+  --dot-color: oklch(0.75 0.15 var(--hue) / 12%);
+
+  --background: oklch(0.17 0.04 var(--hue));
+  --foreground: oklch(0.96 0.015 var(--hue));
+  --card: oklch(0.23 0.055 var(--hue));
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.23 0.055 var(--hue));
+  --popover-foreground: var(--foreground);
+  --secondary: oklch(0.3 0.07 var(--hue));
+  --secondary-foreground: oklch(0.96 0.015 var(--hue));
+  --muted: oklch(0.28 0.06 var(--hue));
+  --muted-foreground: oklch(0.75 0.06 var(--hue));
+  --accent: oklch(0.32 0.08 var(--hue));
+  --accent-foreground: oklch(0.96 0.015 var(--hue));
+  --border: oklch(0.75 0.12 var(--hue) / 22%);
+  --input: oklch(0.75 0.12 var(--hue) / 28%);
+  --glow-a: oklch(0.45 0.16 var(--hue) / 40%);
+  --glow-b: oklch(0.4 0.14 calc(var(--hue) + 50) / 35%);
+}
+
+[data-accent]:not([data-accent="default"]) body {
+  background-image:
+    radial-gradient(60rem 40rem at 0% 0%, var(--glow-a), transparent 70%),
+    radial-gradient(50rem 40rem at 100% 100%, var(--glow-b), transparent 70%);
+  background-attachment: fixed;
+}
+
+[data-accent]:not([data-accent="default"]) ::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

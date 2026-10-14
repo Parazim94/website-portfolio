@@ -20,6 +20,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import { AccentPicker } from "@/components/layout/accent-picker";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { navLinks, siteConfig } from "@/lib/site-config";
 
@@ -52,6 +53,7 @@ export function Navbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-1">
+          <AccentPicker />
           <ThemeToggle />
 
           <Sheet open={open} onOpenChange={setOpen}>
